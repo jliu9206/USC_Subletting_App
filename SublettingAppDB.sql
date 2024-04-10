@@ -20,11 +20,13 @@ CREATE TABLE Login (
 
 CREATE TABLE Post (
     ID INT AUTO_INCREMENT PRIMARY KEY,
+    Titile TEXT,
     PropertyType VARCHAR(256),
     Address VARCHAR(256),
     MonthlyPrice DOUBLE,
     NumberOfBedrooms INT,
     NumberOfBathrooms INT,
+    Size DOUBLE,
     AvailabilityStart DATE,
     AvailabilityEnd DATE,
     Description TEXT
