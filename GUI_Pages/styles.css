@@ -1,15 +1,22 @@
 body {
     font-family: 'ubuntu', sans-serif;
     background-color: #F6F3E7;
+    
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 footer {
     background-color: #767676;
     color: white;
     padding: 15px 0;
-    position: absolute;
+    position: sticky;
     bottom: 0;
     width: 100%;
     text-align: center;
+}
+.content {
+    flex: 1;
 }
 .navbar {
     background-color: #FF5A5F;
@@ -60,3 +67,9 @@ footer {
 .btn-secondary {
     margin-top: 15px;
 }
+
+.container {
+    padding-bottom: 50px;
+}
+
+
