@@ -1,0 +1,62 @@
+body {
+    font-family: 'ubuntu', sans-serif;
+    background-color: #F6F3E7;
+}
+footer {
+    background-color: #767676;
+    color: white;
+    padding: 15px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+.navbar {
+    background-color: #FF5A5F;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    margin: 0;
+}
+
+.navbar ul li {
+    padding: 0 10px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+}
+.navbar p{
+    padding: 0 40px;
+    color: white;
+    margin: 0px;
+}
+.btn-custom {
+    background-color: #FF5A5F;
+    border-color: #FF5A5F;
+    color: white;
+}
+.btn-custom:hover {
+    background-color: #FF5A5F;
+    border-color: #FF5A5F;
+}
+.btn-outline-custom {
+    color: #000435; 
+}
+.btn-outline-custom:hover, .btn-check:checked + .btn-outline-custom {
+    background-color: #000435; 
+    border-color: #000435;
+    color: white; 
+}
+
+.btn-secondary {
+    margin-top: 15px;
+}

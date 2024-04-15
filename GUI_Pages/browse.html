@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Listings - USC Subletting Web Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet"> 
+
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg ">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="browse.html">USC Subletting</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="browse.html">Browse</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="profile.html">Profile</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="messages.html">Messages</a>
+          </li>
+      </ul>
+
+      <p>You are logged in as</p>
+      <button onclick="location.href='logout.html'" class="btn" type="button">Logout</button>
+  </div>
+</div>
+</div>
+</nav>
+
+<!-- Search Form -->
+<div class="container mt-4">
+    <h1>Browse Listings</h1>
+    <form method="get" action="SearchServlet">
+        <div class="row g-3">
+            <div class="col-sm-4">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Listing name">
+            </div>
+            <div class="col-sm-4">
+                <label for="dateFrom" class="form-label">Availability Date From</label>
+                <input type="date" name="dateFrom" class="form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="dateTo" class="form-label">Availability Date To</label>
+                <input type="date" name="dateTo" class="form-control">
+            </div>
+            <div class="col-sm-4">
+                <label for="priceMin" class="form-label">Min Price</label>
+                <input type="number" name="priceMin" class="form-control" placeholder="0">
+            </div>
+            <div class="col-sm-4">
+                <label for="priceMax" class="form-label">Max Price</label>
+                <input type="number" name="priceMax" class="form-control" placeholder="10000">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-custom">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container mt-5">
+    <h2 class="mb-4">Available Listings</h2>
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <!-- Sample Card 1 -->
+        <div class="col">
+            <div class="card h-100" style="background-color: #7F7FD5;"> <!-- Apply background color -->
+                <div class="card-body">
+                    <h5 class="card-title">Apartment/house listing</h5>
+                    <p class="card-text">Single room in house near Ralph's<br>Available May 2024-August 2024</p>
+                    <h6 class="card-subtitle mb-2 text-muted">$1560/month</h6>
+                </div>
+            </div>
+        </div>
+        <!-- Sample Card 2 -->
+        <div class="col">
+            <div class="card h-100" style="background-color: #FF7F50;"> <!-- Apply background color -->
+                <div class="card-body">
+                    <h5 class="card-title">Apartment/house listing</h5>
+                    <p class="card-text">Double room in apartment on frat row<br>Available May 2024-August 2024</p>
+                    <h6 class="card-subtitle mb-2 text-muted">$950/month</h6>
+                </div>
+            </div>
+        </div>
+        <!-- More cards can be added here -->
+    </div>
+</div>
+<footer>
+    <p>© 2024 USC Subletting. All rights reserved.</p>
+</footer>
+
+<!-- Bootstrap JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
