@@ -1,3 +1,12 @@
+-- -- drop table statements for SQL testing
+-- DROP TABLE Ratings;
+-- DROP TABLE Post;
+-- DROP TABLE PropType;
+-- DROP TABLE Renters;
+-- DROP TABLE Subletters;
+-- DROP TABLE Login;
+-- DROP TABLE UserType;
+-- DROP TABLE ReviewDirection;
 
 CREATE TABLE UserType (
     TypeID INT PRIMARY KEY,
@@ -7,7 +16,7 @@ CREATE TABLE UserType (
 INSERT INTO UserType (TypeID, TypeName) VALUES
 (1, 'Subletter'),
 (2, 'Renter'),
-(3, 'administrator');
+(3, 'Administrator');
 
 CREATE TABLE Login (
     LoginID INT AUTO_INCREMENT PRIMARY KEY,
@@ -18,20 +27,6 @@ CREATE TABLE Login (
     FOREIGN KEY (TypeID) REFERENCES UserType(TypeID)
 );
 
-CREATE TABLE Post (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
-    Titile TEXT,
-    PropertyType VARCHAR(256),
-    Address VARCHAR(256),
-    MonthlyPrice DOUBLE,
-    NumberOfBedrooms INT,
-    NumberOfBathrooms INT,
-    Size DOUBLE,
-    AvailabilityStart DATE,
-    AvailabilityEnd DATE,
-    Description TEXT
-);
-
 CREATE TABLE Subletters (
     SubletID INT AUTO_INCREMENT PRIMARY KEY,
     Username VARCHAR(256),
@@ -39,8 +34,7 @@ CREATE TABLE Subletters (
     LastName VARCHAR(55),
     Location VARCHAR(55),
     SubletDetails INT,
-    FOREIGN KEY (Username) REFERENCES Login(Username),
-    FOREIGN KEY (SubletDetails) REFERENCES Post(ID)
+    FOREIGN KEY (Username) REFERENCES Login(Username)
 );
 
 CREATE TABLE Renters (
@@ -50,8 +44,35 @@ CREATE TABLE Renters (
     LastName VARCHAR(55),
     Location VARCHAR(55),
     TypeOfRent INT,
-    FOREIGN KEY (Username) REFERENCES Login(Username),
-    FOREIGN KEY (TypeOfRent) REFERENCES Post(ID)
+    FOREIGN KEY (Username) REFERENCES Login(Username)
+);
+
+CREATE TABLE PropType (
+    TypeID INT PRIMARY KEY,
+    TypeName VARCHAR(50)
+);
+
+INSERT INTO PropType (TypeID, TypeName) VALUES
+	(1, 'Apartment'),
+	(2, 'House'),
+	(3, 'Studio'),
+	(4, 'Loft');
+
+CREATE TABLE Post (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Title TEXT,
+    PropertyType INT,
+    Address VARCHAR(256),
+    MonthlyPrice DOUBLE,
+    NumberOfBedrooms INT,
+    NumberOfBathrooms INT,
+    Size DOUBLE,
+    AvailabilityStart DATE,
+    AvailabilityEnd DATE,
+    Description TEXT,
+    Renter INT,
+    FOREIGN KEY (PropertyType) REFERENCES PropType(TypeID),
+	FOREIGN KEY (Renter) REFERENCES Renters(RenterID)
 );
 
 CREATE TABLE ReviewDirection (
@@ -60,7 +81,6 @@ CREATE TABLE ReviewDirection (
 );
 
 INSERT INTO ReviewDirection (DirectionName) VALUES ('RenterToSubletter'), ('SubletterToRenter');
-
 
 CREATE TABLE Ratings (
     ID INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,4 +93,3 @@ CREATE TABLE Ratings (
     FOREIGN KEY (SubletID) REFERENCES Subletters(SubletID),
     FOREIGN KEY (ReviewDirectionID) REFERENCES ReviewDirection(DirectionID)
 );
-
