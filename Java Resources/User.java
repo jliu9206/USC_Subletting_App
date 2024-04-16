@@ -53,17 +53,18 @@ class User {
         return profileType;
     }
 
-    public void setProfileType(String profileType) {
-        this.profileType = profileType;
+   public void setProfileType(String profileType) {
+        this.profileType = profileType; // this determines access to specific tables in database
     }
 
     public boolean login() {
-        // Placeholder for login logic
+        // Placeholder for login logic, will need to call a validation function to check database
         return true;
     }
 
     public void logout() {
-        // Placeholder for logout logic
+        // Placeholder for logout logic, load the login page cut access to database/set user inactive
+        // inactive user signifies the user no longer has access to database: any posts, reviews, their favorites etc.
     }
 }
 
