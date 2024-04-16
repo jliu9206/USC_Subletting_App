@@ -174,22 +174,18 @@ public class JDBCPost {
 //	// TODO: RENTER JDBC CODE, waiting on Renter and Subletter classes
 //	//
 //	// 		Create a new RENTER profile in the SQL DB
-//	public void createRenter(Connection conn, Renter renter) {
-//		
-//	}
-//	//		Get RENTER info from SYSTEM to display on profile or on POST
-//	public Renter getRenter(Connection conn, int RenterID) {
-//		
-//	}
-//	
-//	// TODO: SUBLETTER JDBC CODE
-//	//
-//	// 		Create a new SUBLETTER profile in the SQL DB
-//	public void createSubletter(Connection conn, Subletter subletter) {
-//		
-//	}
-//	// 		Get RENTER info from SYSTEM to display on profile
-//	public void createSubletter(Connection conn, Subletter subletter) {
-//		
-//	}
-}
+	public void createRenter(Connection conn, Renter renter) {
+		// Based on the current structure of the Renters table
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("INSERT INTO Renters(Username, FirstName, LastName, Location, \n"
+					+ "			TypeOfRent)\n"
+					+ "	VALUES (" 
+					+ renter.getUsername() + ", " 
+					+ renter.getFirstName() + ", " 
+					+ renter.getLastName() + ", " 
+					+ renter.getLocation() + ", " // ???

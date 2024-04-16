@@ -18,11 +18,14 @@ INSERT INTO UserType (TypeID, TypeName) VALUES
 (2, 'Renter'),
 (3, 'Administrator');
 
-CREATE TABLE Login (
+CREATE TABLE Login ( /* stores information for all users */
     LoginID INT AUTO_INCREMENT PRIMARY KEY,
     Username VARCHAR(256) UNIQUE,
     PasswordHash VARCHAR(256),
     Email VARCHAR(55) UNIQUE,
+    FirstName VARCHAR(55),
+    LastName VARCHAR(55),
+    Location VARCHAR(55),
     TypeID INT,
     FOREIGN KEY (TypeID) REFERENCES UserType(TypeID)
 );
@@ -43,7 +46,6 @@ CREATE TABLE Renters (
     FirstName VARCHAR(55),
     LastName VARCHAR(55),
     Location VARCHAR(55),
-    TypeOfRent INT,
     FOREIGN KEY (Username) REFERENCES Login(Username)
 );
 
@@ -90,6 +92,4 @@ CREATE TABLE Ratings (
     SubletID INT,
     ReviewDirectionID INT,
     FOREIGN KEY (RenterID) REFERENCES Renters(RenterID),
-    FOREIGN KEY (SubletID) REFERENCES Subletters(SubletID),
-    FOREIGN KEY (ReviewDirectionID) REFERENCES ReviewDirection(DirectionID)
-);
+    FOREIGN KEY (SubletID) REFERENCES Su

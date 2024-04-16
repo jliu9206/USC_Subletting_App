@@ -7,13 +7,25 @@ class User {
     private String username;
     private String password;
     private String email;
+    private String firstName;
+    private String lastName;
     private String profileType;
 
-    public User(Integer userID, String username, String password, String email, String profileType) {
+    public User(Integer userID, String username, String password, String email, String firstName, String lastName, String profileType) {
         this.userID = userID;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profileType = profileType;
+    }
+
+    public User(String username, String firstName, String lastName, String profileType) {
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.profileType = profileType;
     }
 
@@ -27,6 +39,22 @@ class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void getLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setPassword(String password) {
@@ -62,14 +90,18 @@ class User {
 
 
 // Renter class that extends User
-class Renter extends User {
+class Subletter extends User {
     private List<Post> favoriteProperties;
     private double budget;
 
-    public Renter(Integer userID, String username, String password, String email, String profileType, double budget) {
+    public Subletter(Integer userID, String username, String password, String email, String profileType, double budget) {
         super(userID, username, password, email, profileType);
         this.favoriteProperties = new ArrayList<>();
         this.budget = budget;
+    }
+
+    public Subletter(String username, String firstName, String lastName, String profileType) {
+        super(username, firstName, lastName, "Subletter");
     }
 
     public List<Post> getFavoriteProperties() {
@@ -99,37 +131,4 @@ class Renter extends User {
         return new ArrayList<>();
     }
 
-    public void leaveReview(Post property, Review review) {
-        // need to integrate with Post class, adds a review to the Review list
-        property.addReview(review);
-    }
-}
-
-
-
-// Subletter class that extends User
-class Subletter extends User {
-    private List<Post> properties;
-
-    public Subletter(Integer userID, String username, String password, String email, String profileType) {
-        super(userID, username, password, email, profileType);
-        properties = new ArrayList<>();
-    }
-
-    public List<Post> getProperties() {
-        return new ArrayList<>(properties);
-    }
-
-    public void addListing(Post property) {
-        properties.add(property);
-    }
-
-    public void removeListing(Post property) {
-        properties.remove(property);
-    }
-
-    public void editListing(Post property) {
-        // Placeholder for editing property details
-        // post details in database must be edited too
-    }
-}
+    public void leav
