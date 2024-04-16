@@ -11,6 +11,7 @@ public class Post{
 	private String AvailabilityEnd;
 	private String Description;
 	private int Renter;
+	public ArrayList<String> Reviews = new ArrayList<String>();
 
 	
 	public Post(int id, String title, int propType, String address, double price ,
