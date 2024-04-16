@@ -101,10 +101,13 @@ class Renter extends User {
 
     public List<Post> searchProperties() {
         // Placeholder for property search logic
+        // Need to access database of properties
+        // Filter properties based on user budger
         return new ArrayList<>();
     }
 
     public void leaveReview(Post property, Review review) {
+        // need to integrate with Post class, adds a review to the Review list
         property.addReview(review);
     }
 }
@@ -134,5 +137,6 @@ class Subletter extends User {
 
     public void editListing(Post property) {
         // Placeholder for editing property details
+        // post details in database must be edited too
     }
 }
