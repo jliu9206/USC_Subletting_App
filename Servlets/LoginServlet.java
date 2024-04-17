@@ -10,7 +10,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String password = request.getParameter("password"); // we will encrypt this for DB
 
         // Dummy validation. Replace with actual database check.
         boolean isValidUser = "admin".equals(username) && "admin123".equals(password);

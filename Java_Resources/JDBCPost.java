@@ -174,7 +174,7 @@ public class JDBCPost {
 //	// TODO: RENTER JDBC CODE, waiting on Renter and Subletter classes
 //	//
 //	// 		Create a new RENTER profile in the SQL DB
-	public void createRenter(Connection conn, Renter renter) {
+	public void createRenter(Connection conn, User renter) {
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -215,7 +215,7 @@ public class JDBCPost {
 			}
 			else {
 				String username = rs.getString("Username");
-				String username = rs.getString("Email");
+				String email = rs.getString("Email");
 				String firstname = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
 				
@@ -241,7 +241,7 @@ public class JDBCPost {
 //	// TODO: SUBLETTER JDBC CODE
 //	//
 //	// 		Create a new SUBLETTER profile in the SQL DB
-	public void createSubletter(Connection conn, Subletter subletter) {
+	public void createSubletter(Connection conn, User subletter) {
 
 		Statement st = null;
 		PreparedStatement ps = null;
@@ -269,7 +269,7 @@ public class JDBCPost {
 	}
 //	// 		Get SUBLETTER info from SYSTEM to display on profile
 	//	//		Get RENTER info from SYSTEM to display on profile or on POST
-	public Renter getSubletter(Connection conn, String username) {
+	public Subletter getSubletter(Connection conn, String username) {
 		Subletter s = null;
 		Statement st = null;
 		PreparedStatement ps = null;
@@ -285,7 +285,7 @@ public class JDBCPost {
 			}
 			else {
 				String username = rs.getString("Username");
-				String username = rs.getString("Email");
+				String email = rs.getString("Email");
 				String firstname = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
 				
@@ -307,4 +307,81 @@ public class JDBCPost {
 
 		return s;	
 	}
+
+	public void createUser(Connection conn, User user) {
+
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("INSERT INTO Login(Username, PasswordHash, Email, FirstName, LastName, TypeID)" 
+					+ " VALUES (" 
+					+ user.getUsername() + ", "
+					+ user.getPasswordHash() + ", "
+					+ user.getEmail() + ", "
+					+ user.getFirstName() + ", "
+					+ user.getLastName() + ", "
+					+ user.getProfileType()
+					+ ");");
+	
+			rs = ps.executeQuery();
+
+			if (user.getProfileType() == 1) {
+				createSubletter(conn, user);				
+			}
+
+			else if (user.getProfileType() == 2) {
+				createRenter(conn, user);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Subletters failed to insert Subletter into table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+	}
+
+	//Get password for login servlet
+	public String getPasswordHash(Connection conn, User user) {
+		String passwordHash = null;
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("SELECT PasswordHash FROM Login WHERE Login.Username = " + user.getUsername() + ");");
+			rs = ps.executeQuery();
+
+			if(!rs.next()) {
+				System.out.println("No such username");
+			}
+			else {
+				passwordHash = rs.getString("PasswordHash");
+			}
+
+		} catch (SQLException e) {
+			System.out.println("User failed to retrieve PasswordHash from table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+
+		return passwordHash;	
+	}
+
+	
 }
