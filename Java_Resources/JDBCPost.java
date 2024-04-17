@@ -175,7 +175,6 @@ public class JDBCPost {
 //	//
 //	// 		Create a new RENTER profile in the SQL DB
 	public void createRenter(Connection conn, Renter renter) {
-		// Based on the current structure of the Renters table
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -200,7 +199,7 @@ public class JDBCPost {
 		}
 	}
 //	//		Get RENTER info from SYSTEM to display on profile or on POST
-	public Renter getRenter(Connection conn, int RenterID) {
+	public Renter getRenter(Connection conn, String username) {
 		Renter r = null;
 		Statement st = null;
 		PreparedStatement ps = null;
@@ -208,8 +207,7 @@ public class JDBCPost {
 
 		try {
 			st = conn.createStatement();
-			ps = conn.prepareStatement("SELECT Username, FirstName, LastName FROM Renters WHERE RenterID = " + RenterID + ");");
-			ps = conn.prepareStatement("SELECT ";");
+			ps = conn.prepareStatement("SELECT Username, Email, FirstName, LastName FROM Login WHERE Renters.Username = " + username + ");");
 			rs = ps.executeQuery();
 
 			if(!rs.next()) {
@@ -217,10 +215,11 @@ public class JDBCPost {
 			}
 			else {
 				String username = rs.getString("Username");
+				String username = rs.getString("Email");
 				String firstname = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
 				
-				r = new Renter(username, firstName, lastName, "Renter");
+				r = new Renter(username, email, firstName, lastName);
 			}
 
 			
@@ -269,7 +268,8 @@ public class JDBCPost {
 //		
 	}
 //	// 		Get SUBLETTER info from SYSTEM to display on profile
-	public void createSubletter(Connection conn, int SubletterID) {
+	//	//		Get RENTER info from SYSTEM to display on profile or on POST
+	public Renter getSubletter(Connection conn, String username) {
 		Subletter s = null;
 		Statement st = null;
 		PreparedStatement ps = null;
@@ -277,7 +277,7 @@ public class JDBCPost {
 
 		try {
 			st = conn.createStatement();
-			ps = conn.prepareStatement("SELECT Username, FirstName, LastName FROM Subletters WHERE SubletterID = " + SubletterID + ");");
+			ps = conn.prepareStatement("SELECT Username, Email, FirstName, LastName FROM Login WHERE Subletters.Username = " + username + ");");
 			rs = ps.executeQuery();
 
 			if(!rs.next()) {
@@ -285,10 +285,11 @@ public class JDBCPost {
 			}
 			else {
 				String username = rs.getString("Username");
+				String username = rs.getString("Email");
 				String firstname = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
 				
-				s = new Subletter(username, firstName, lastName, "Subletter");
+				s = new Subletter(username, email, firstName, lastName);
 			}
 
 			

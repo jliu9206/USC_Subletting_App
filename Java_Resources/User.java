@@ -21,13 +21,12 @@ class User {
         this.profileType = profileType;
     }
 
-    /*public User(String username, String firstName, String lastName, int profileType) {
+    public User(String username, String email, String firstName, String lastName) {
         this.username = username;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.profileType = profileType;
-    }*/
+    }
 
     public Integer getUserID() {
         return userID;
@@ -98,9 +97,9 @@ class Subletter extends User {
         this.favoriteProperties = new ArrayList<>();
     }
 
-    /*public Subletter(String username, String firstName, String lastName, String profileType) {
-        super(username, firstName, lastName, "Subletter");
-    }*/
+    public Subletter(String username, String email, String firstName, String lastName) {
+        super(username, email, firstName, lastName);
+    }
 
     public List<Post> getFavoriteProperties() {
         return new ArrayList<>(favoriteProperties);
@@ -139,9 +138,8 @@ class Renter extends User {
         properties = new ArrayList<>();
     }
 
-    public Renter(String username, String firstName, String lastName, int profileType) {
-        super(username, firstName, lastName, 2);
-        properties = new ArrayList<>();
+    public Renter(String username, String email, String firstName, String lastName) {
+        super(username, email, firstName, lastName);
     }
 
     /*public List<Post> getProperties() {
