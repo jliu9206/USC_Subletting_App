@@ -1,12 +1,14 @@
 -- -- drop table statements for SQL testing
--- DROP TABLE Ratings;
--- DROP TABLE Post;
--- DROP TABLE PropType;
--- DROP TABLE Renters;
--- DROP TABLE Subletters;
--- DROP TABLE Login;
--- DROP TABLE UserType;
--- DROP TABLE ReviewDirection;
+DROP TABLE Ratings;
+DROP TABLE FavoriteProperties;
+DROP TABLE Post;
+DROP TABLE Renters;
+DROP TABLE Subletters;
+DROP TABLE PropType;
+DROP TABLE Login;
+DROP TABLE UserType;
+DROP TABLE ReviewDirection;
+
 
 CREATE TABLE UserType (
     TypeID INT PRIMARY KEY,
@@ -31,13 +33,13 @@ CREATE TABLE Login ( /* stores information for all users */
 
 CREATE TABLE Subletters (
     ID INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(256),
+    Username VARCHAR(256) UNIQUE,
     FOREIGN KEY (Username) REFERENCES Login(Username)
 );
 
 CREATE TABLE Renters (
     ID INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(256),
+    Username VARCHAR(256) UNIQUE,
     FOREIGN KEY (Username) REFERENCES Login(Username)
 );
 
@@ -65,7 +67,7 @@ CREATE TABLE Post (
     Description TEXT,
     Renter INT,
     FOREIGN KEY (PropertyType) REFERENCES PropType(TypeID),
-	FOREIGN KEY (Renter) REFERENCES Renters(RenterID)
+	FOREIGN KEY (Renter) REFERENCES Renters(ID)
 );
 
 CREATE TABLE ReviewDirection (
@@ -82,8 +84,8 @@ CREATE TABLE Ratings (
     RenterID INT,
     SubletID INT,
     ReviewDirectionID INT,
-    FOREIGN KEY (RenterID) REFERENCES Renters(RenterID),
-    FOREIGN KEY (SubletID) REFERENCES Subletters(SubletID),
+    FOREIGN KEY (RenterID) REFERENCES Renters(ID),
+    FOREIGN KEY (SubletID) REFERENCES Subletters(ID),
     FOREIGN KEY (ReviewDirectionID) REFERENCES ReviewDirection(DirectionID)
 );
 
@@ -93,3 +95,16 @@ CREATE TABLE FavoriteProperties (
     FOREIGN KEY (PostID) REFERENCES Post(ID),
     FOREIGN KEY (SubletID) REFERENCES Subletters(ID)
 );
+
+-- CREATE TABLE Login ( /* stores information for all users */
+--     ID INT AUTO_INCREMENT PRIMARY KEY,
+--     Username VARCHAR(256) UNIQUE,
+--     PasswordHash VARCHAR(256),
+--     Email VARCHAR(55) UNIQUE,
+--     FirstName VARCHAR(55),
+--     LastName VARCHAR(55),
+--     TypeID INT,
+--     FOREIGN KEY (TypeID) REFERENCES UserType(TypeID)
+-- );
+
+-- SELECT 
