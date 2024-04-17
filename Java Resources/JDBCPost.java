@@ -182,10 +182,128 @@ public class JDBCPost {
 
 		try {
 			st = conn.createStatement();
-			ps = conn.prepareStatement("INSERT INTO Renters(Username, FirstName, LastName, Location, \n"
-					+ "			TypeOfRent)\n"
+			ps = conn.prepareStatement("INSERT INTO Renters(Username)"
 					+ "	VALUES (" 
-					+ renter.getUsername() + ", " 
-					+ renter.getFirstName() + ", " 
-					+ renter.getLastName() + ", " 
-					+ renter.getLocation() + ", " // ???
+					+ renter.getUsername() + ");"); // Confused about this field
+			
+			rs = ps.executeQuery();
+		} catch (SQLException e) {
+			System.out.println("Renters failed to insert Renter into table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+	}
+//	//		Get RENTER info from SYSTEM to display on profile or on POST
+	public Renter getRenter(Connection conn, int RenterID) {
+		Renter r = null;
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("SELECT Username, FirstName, LastName FROM Renters WHERE RenterID = " + RenterID + ");");
+			ps = conn.prepareStatement("SELECT ";");
+			rs = ps.executeQuery();
+
+			if(!rs.next()) {
+				System.out.println("No such renter");
+			}
+			else {
+				String username = rs.getString("Username");
+				String firstname = rs.getString("FirstName");
+				String lastName = rs.getString("LastName");
+				
+				r = new Renter(username, firstName, lastName, "Renter");
+			}
+
+			
+		} catch (SQLException e) {
+			System.out.println("Renters failed to retrieve Renter from table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+
+		return r;	
+	}
+//	
+//	// TODO: SUBLETTER JDBC CODE
+//	//
+//	// 		Create a new SUBLETTER profile in the SQL DB
+	public void createSubletter(Connection conn, Subletter subletter) {
+
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("INSERT INTO Subletters(Username)"
+					+ "	VALUES (" 
+					+ subletter.getUsername() + ");");
+			
+			rs = ps.executeQuery();
+		} catch (SQLException e) {
+			System.out.println("Subletters failed to insert Subletter into table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+//		
+	}
+//	// 		Get SUBLETTER info from SYSTEM to display on profile
+	public void createSubletter(Connection conn, int SubletterID) {
+		Subletter s = null;
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("SELECT Username, FirstName, LastName FROM Subletters WHERE SubletterID = " + SubletterID + ");");
+			rs = ps.executeQuery();
+
+			if(!rs.next()) {
+				System.out.println("No such subletter");
+			}
+			else {
+				String username = rs.getString("Username");
+				String firstname = rs.getString("FirstName");
+				String lastName = rs.getString("LastName");
+				
+				s = new Subletter(username, firstName, lastName, "Subletter");
+			}
+
+			
+		} catch (SQLException e) {
+			System.out.println("Subletters failed to retrieve Subletter from table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+
+		return s;	
+	}
+}

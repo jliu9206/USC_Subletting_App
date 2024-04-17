@@ -19,33 +19,25 @@ INSERT INTO UserType (TypeID, TypeName) VALUES
 (3, 'Administrator');
 
 CREATE TABLE Login ( /* stores information for all users */
-    LoginID INT AUTO_INCREMENT PRIMARY KEY,
+    ID INT AUTO_INCREMENT PRIMARY KEY,
     Username VARCHAR(256) UNIQUE,
     PasswordHash VARCHAR(256),
     Email VARCHAR(55) UNIQUE,
     FirstName VARCHAR(55),
     LastName VARCHAR(55),
-    Location VARCHAR(55),
     TypeID INT,
     FOREIGN KEY (TypeID) REFERENCES UserType(TypeID)
 );
 
 CREATE TABLE Subletters (
-    SubletID INT AUTO_INCREMENT PRIMARY KEY,
+    ID INT AUTO_INCREMENT PRIMARY KEY,
     Username VARCHAR(256),
-    FirstName VARCHAR(55),
-    LastName VARCHAR(55),
-    Location VARCHAR(55),
-    SubletDetails INT,
     FOREIGN KEY (Username) REFERENCES Login(Username)
 );
 
 CREATE TABLE Renters (
-    RenterID INT AUTO_INCREMENT PRIMARY KEY,
+    ID INT AUTO_INCREMENT PRIMARY KEY,
     Username VARCHAR(256),
-    FirstName VARCHAR(55),
-    LastName VARCHAR(55),
-    Location VARCHAR(55),
     FOREIGN KEY (Username) REFERENCES Login(Username)
 );
 
@@ -57,8 +49,7 @@ CREATE TABLE PropType (
 INSERT INTO PropType (TypeID, TypeName) VALUES
 	(1, 'Apartment'),
 	(2, 'House'),
-	(3, 'Studio'),
-	(4, 'Loft');
+	(3, 'Room');
 
 CREATE TABLE Post (
     ID INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,4 +83,13 @@ CREATE TABLE Ratings (
     SubletID INT,
     ReviewDirectionID INT,
     FOREIGN KEY (RenterID) REFERENCES Renters(RenterID),
-    FOREIGN KEY (SubletID) REFERENCES Su
+    FOREIGN KEY (SubletID) REFERENCES Subletters(SubletID),
+    FOREIGN KEY (ReviewDirectionID) REFERENCES ReviewDirection(DirectionID)
+);
+
+CREATE TABLE FavoriteProperties (
+    PostID INT,
+    SubletID INT,
+    FOREIGN KEY (PostID) REFERENCES Post(ID),
+    FOREIGN KEY (SubletID) REFERENCES Subletters(ID)
+);
