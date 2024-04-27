@@ -9,8 +9,50 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet"> 
+    <style>
+    	#diff-users {
+    		width: 20%;
+    	}
+    	#chat {
+    		align-items: center;
+    		height: 80%;
+    		width: 80%;
+    		background: white;
+    	}
+    	#messageInput {
+    	    border-radius: 5px;
+    	}
+    	#message-button {
+    		border-radius: 5px;
+    	}
+    	#mychat {
+    		display: flex;
+    		justify-content: center;
+    	}
+		.message-chat {
+	      border: 1px solid #ccc;
+	      border-radius: 5px;
+	      padding: 10px;
+	      background-color: #f9f9f9;
+	      width: 60%;
+	    }
+	   .container {
+	      display: flex;
+	      justify-content: center;
+	      align-items: center;
+	      margin-top: 10%;
+	      width: 80%;
+	    }
+	    #message-input {
+	    	display: flex;
+	      	justify-content: center;
+	    }	
+	    #box {
+	    	margin-right: 10px;
+	    }
+    </style>
 </head>
-<body>
+<body onload="connectToServer()">
     <nav class="navbar navbar-expand-lg ">
         <div class="container-fluid">
             <a class="navbar-brand" href="browse.html">USC Subletting</a>
@@ -26,7 +68,7 @@
                         <a class="nav-link" href="profile.html">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="messages.html">Messages</a>
+                        <a class="nav-link" href="Messages.html">Messages</a>
                     </li>
                 </ul>
                 <p>You are logged in as</p>
@@ -35,20 +77,47 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1>Message Center</h1>
-        
-        <!-- messages go here after back end is complete -->
-        
-        <div class="my-5"></div>
-        
-    </div>
-
+    <div class="container">
+		
+		<form name="chatform" class="message-chat">
+		<div id="mychat"></div>
+		<br />
+			<div id="message-input">
+				<input id="box" type="text" name="message" placeholder="Message!" />
+				<input type="button" value="Send" onclick="sendMessage();" />
+			</div>
+		</form>
+ 	 </div>
     <footer>
         <p>© 2024 USC Subletting. All rights reserved.</p>
     </footer>
 
     <!-- Bootstrap JS bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- <script src="websocket.js"></script> -->
+	<script>
+			var socket;
+			//let user = localstorage.getItem("username");
+			function connectToServer() {
+				socket = new WebSocket("ws://localhost:8080/CSCI201Group17/ws");
+				socket.onopen = function(event) {
+					//allow message to open as indication of start?
+					//user name
+					document.getElementById("mychat").innerHTML += "Connected!<br />";
+				}
+				socket.onmessage = function(event) {
+					document.getElementById("mychat").innerHTML += event.data + "<br />";
+				}
+				socket.onclose = function(event) {
+					document.getElementById("mychat").innerHTML += "Disconnected!<br />";
+				}
+			}
+			function sendMessage() {
+				//let user = localstorage.getItem("username");
+				let user = "placeholder";
+				socket.send(user + ": " + document.chatform.message.value);
+				return false;
+			}
+		</script>
 </body>
 </html>
