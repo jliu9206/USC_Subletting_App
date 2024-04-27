@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
+
 
 public class RegisterServlet extends HttpServlet {
     
@@ -26,6 +28,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Set response content type to JSON
+        PrintWriter pw = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -33,58 +36,31 @@ public class RegisterServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String username = request.getParameter("username");
-        String password = request.getParameter("password"); // Consider hashing the password
+        String password = request.getParameter("password");
+        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(12)); // hash the function
         String email = request.getParameter("email");
-        String userType = request.getParameter("userType");
+        int userType = Integer.parseInt(request.getParameter("userType"));
+        
+        Connection conn = connectSQL("root", "insertPasswordHere");
+        User user = new User(username, password, email, firstName, lastName, profileType);
+        int[] loginIDuserID = createUser(conn, user);
 
-        JsonObject jsonResponse;
+        Gson gson = new Gson();
 
-        try (Connection conn = dataSource.getConnection()) {
-            // Insert into Login table
-            String sql = "INSERT INTO Login (Username, PasswordHash, Email, FirstName, LastName, TypeID) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, username);
-                stmt.setString(2, password); // Ideally, hash the password
-                stmt.setString(3, email);
-                stmt.setString(4, firstName);
-                stmt.setString(5, lastName);
-                stmt.setInt(6, "Subletter".equals(userType) ? 1 : ("Renter".equals(userType) ? 2 : 3)); // Mapping user type to TypeID
-                int affectedRows = stmt.executeUpdate();
-
-                if (affectedRows == 0) {
-                    throw new SQLException("Creating user failed, no rows affected.");
-                }
-
-                // Handle specific tables for Subletters or Renters
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        long userId = generatedKeys.getLong(1);
-                        if ("Subletter".equals(userType)) {
-                            insertIntoSpecificTable(conn, "Subletters", userId, username);
-                        } else if ("Renter".equals(userType)) {
-                            insertIntoSpecificTable(conn, "Renters", userId, username);
-                        }
-                    } else {
-                        throw new SQLException("Creating user failed, no ID obtained.");
-                    }
-                }
-            }
-
-            jsonResponse = Json.createObjectBuilder()
-                .add("success", true)
-                .add("message", "Registration successful!")
-                .build();
-        } catch (SQLException e) {
-            jsonResponse = Json.createObjectBuilder()
-                .add("success", false)
-                .add("message", "Database error: " + e.getMessage())
-                .build();
+        /*if (userID == -1) {
+            pw.write(gson.toJson(-1));
         }
 
-        // Write the JSON object to response
-        try (PrintWriter out = response.getWriter()) {
-            out.println(jsonResponse.toString());
+        else if (userID == -2) {
+            pw.write(gson.toJson(-2));
         }
+
+        else {*/
+        pw.write(gson.toJson(loginIDuserID));
+        //}
+
+        pw.flush();
+
     }
 
     private void insertIntoSpecificTable(Connection conn, String tableName, long userId, String username) throws SQLException {

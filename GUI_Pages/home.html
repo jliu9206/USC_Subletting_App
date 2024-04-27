@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-6 register-section">
                 <h2>New? Create an account!</h2>
-                <form action="RegisterServlet" method="post">
+                <form method="post">
                     <div class="mb-3">
                         <label for="registerFirstName" class="form-label">First Name:</label>
                         <input type="text" class="form-control" id="registerFirstName" name="firstName" placeholder="Enter first name here" required>
@@ -83,7 +83,7 @@
                         <input type="radio" class="btn-check" name="userType" id="renter" value="renter" autocomplete="off">
                         <label class="btn btn-outline-custom" for="renter">Renter</label>
                     </div>
-                    <button type="submit" class="btn btn-custom w-100 mt-3">Continue</button>
+                    <button type="submit" class="btn btn-custom w-100 mt-3" onclick="register();">Continue</button>
                 </form>
             </div>
             

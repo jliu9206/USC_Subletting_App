@@ -39,13 +39,13 @@ public class JDBCPost {
 		
 		System.out.println("end of testing post");
 	}
-	
+
 	// Connects java code to SQL DB with given login credentials, returns the connection object.
 	public static Connection connectSQL(String user, String pw){
 		Connection conn = null;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/sys?user=" + user + "&password=" + pw);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Final_DB?user=" + user + "&password=" + pw);
 		}
 		catch(Exception e) {
 			System.out.println("connection to SQL credentials invalid, " + e.getMessage());
@@ -57,40 +57,50 @@ public class JDBCPost {
 	// SUBLEASE POST JDBC CODE:
 	//
 	// 		As a RENTTER, insert a new sublease posting to the DB.
-	public static void insertSublease(Connection conn, Post post) {
-		Statement st = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			st = conn.createStatement();
-			ps = conn.prepareStatement("INSERT INTO Post(Title, PropertyType, Address, MonthlyPrice, NumberOfBedrooms, \n"
-					+ "			NumberofBathrooms, Size, AvailabilityStart, AvailabilityEnd, Description, Renter)\n"
-					+ "	VALUES (" 
-					+ post.getID() + ", " 
-					+ post.getTitle() + ", " 
-					+ post.getPropertyType() + ", " 
-					+ post.getAddress() + ", " 
-					+ post.getMonthlyPrice() + ", " 
-					+ post.getNumberOfBedrooms() + ", " 
-					+ post.getNumberOfBathrooms() + ", " 
-					+ post.getSize() + ", " 
-					+ post.getAvailabilityStart() + ", " 
-					+ post.getAvailabilityEnd() + ", "
-					+ post.getDescription()
-					+ post.getRenter() + ");");
-			rs = ps.executeQuery();
-		} catch (SQLException e) {
-			System.out.println("RENTER failed to insert sublease post");
-		} finally {
-			try {
-				if(st != null) st.close();
-				if(ps != null) ps.close();
-				if(rs != null) rs.close();
-			} catch (SQLException sqle) {
-				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
-			}
-		}
-	}
+public static int insertSublease(Connection conn, Post post) {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    int postId = -1; // Default value for error handling
+    try {
+        ps = conn.prepareStatement("INSERT INTO Post(Title, PropertyType, Address, MonthlyPrice, NumberOfBedrooms, " +
+                                   "NumberofBathrooms, Size, AvailabilityStart, AvailabilityEnd, Description, Renter) " +
+                                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, post.getTitle());
+        ps.setInt(2, post.getPropertyType());
+        ps.setString(3, post.getAddress());
+        ps.setDouble(4, post.getMonthlyPrice());
+        ps.setInt(5, post.getNumberOfBedrooms());
+        ps.setInt(6, post.getNumberOfBathrooms());
+        ps.setDouble(7, post.getSize());
+        ps.setString(8, post.getAvailabilityStart());
+        ps.setString(9, post.getAvailabilityEnd());
+        ps.setString(10, post.getDescription());
+        ps.setInt(11, post.getRenter());
+
+        int rowsAffected = ps.executeUpdate();
+        if (rowsAffected == 0) {
+            throw new SQLException("Insertion failed, no rows affected.");
+        }
+
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            postId = rs.getInt(1); // Retrieve the generated primary key
+            post.setID(postId); // Set the ID in the Post object
+        } else {
+            throw new SQLException("Insertion failed, no ID obtained.");
+        }
+    } catch (SQLException e) {
+        System.out.println("Failed to insert sublease post: " + e.getMessage());
+    } finally {
+        try {
+            if (ps != null) ps.close();
+            if (rs != null) rs.close();
+        } catch (SQLException sqle) {
+            System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+        }
+    }
+    return postId;
+}
 	
 	// 		From the SYSTEM, unlist (delete) a sublease posting from the DB after accepted by a SUBLETTER.
 	public static void unlistSublease(Connection conn, Post post) {
@@ -170,22 +180,28 @@ public class JDBCPost {
 		return p;
 	}
 	
-	
 //	// TODO: RENTER JDBC CODE, waiting on Renter and Subletter classes
 //	//
 //	// 		Create a new RENTER profile in the SQL DB
-	public void createRenter(Connection conn, User renter) {
+	public int createRenter(Connection conn, String username) {
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		int userID = -1;
 
 		try {
 			st = conn.createStatement();
 			ps = conn.prepareStatement("INSERT INTO Renters(Username)"
 					+ "	VALUES (" 
-					+ renter.getUsername() + ");"); // Confused about this field
+					+ username + ");"); // Confused about this field
 			
 			rs = ps.executeQuery();
+			rs.next()
+
+			rs = st.executeQuery("SELECT LAST_INSERT_ID()");
+			rs.next();
+			userID = rs.getInt(1);
+
 		} catch (SQLException e) {
 			System.out.println("Renters failed to insert Renter into table");
 		} finally {
@@ -197,6 +213,8 @@ public class JDBCPost {
 				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
 			}
 		}
+
+		return userID;
 	}
 //	//		Get RENTER info from SYSTEM to display on profile or on POST
 	public Renter getRenter(Connection conn, String username) {
@@ -237,23 +255,30 @@ public class JDBCPost {
 
 		return r;	
 	}
-//	
+
 //	// TODO: SUBLETTER JDBC CODE
 //	//
 //	// 		Create a new SUBLETTER profile in the SQL DB
-	public void createSubletter(Connection conn, User subletter) {
+	public int createSubletter(Connection conn, String username) {
 
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		int userID = -1;
 
 		try {
 			st = conn.createStatement();
 			ps = conn.prepareStatement("INSERT INTO Subletters(Username)"
 					+ "	VALUES (" 
-					+ subletter.getUsername() + ");");
+					+ username + ");");
 			
 			rs = ps.executeQuery();
+			rs.next();
+
+			rs = st.executeQuery("SELECT LAST_INSERT_ID()");
+			rs.next();
+			userID = rs.getInt(1);
+
 		} catch (SQLException e) {
 			System.out.println("Subletters failed to insert Subletter into table");
 		} finally {
@@ -265,6 +290,8 @@ public class JDBCPost {
 				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
 			}
 		}
+
+		return userID;
 //		
 	}
 //	// 		Get SUBLETTER info from SYSTEM to display on profile
@@ -308,15 +335,26 @@ public class JDBCPost {
 		return s;	
 	}
 
-	public void createUser(Connection conn, User user) {
-
+	public int[] createUser(Connection conn, User user) {
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		//int[] typeAndUserID = {0, -1}; // username is taken
+		//int userID = -1;
+		int[] loginIDuserID = {-1, -1};
 
 		try {
 			st = conn.createStatement();
-			ps = conn.prepareStatement("INSERT INTO Login(Username, PasswordHash, Email, FirstName, LastName, TypeID)" 
+			ps = conn.prepareStatement("SELECT * FROM Login WHERE Username='" + username + "'");
+			rs = ps.executeQuery();
+			if (!rs.next()) {
+				//st = conn.createStatement();
+				ps = conn.prepareStatement("SELECT * FROM Login WHERE Email='" + email + "'");
+				rs = ps.executeQuery();
+
+				if (!rs.next()) {
+					rs.close();
+					ps = conn.prepareStatement("INSERT INTO Login(Username, PasswordHash, Email, FirstName, LastName, TypeID)" 
 					+ " VALUES (" 
 					+ user.getUsername() + ", "
 					+ user.getPasswordHash() + ", "
@@ -325,19 +363,33 @@ public class JDBCPost {
 					+ user.getLastName() + ", "
 					+ user.getProfileType()
 					+ ");");
-	
-			rs = ps.executeQuery();
 
-			if (user.getProfileType() == 1) {
-				createSubletter(conn, user);				
-			}
+					rs = ps.executeQuery();
+					rs.next();
 
-			else if (user.getProfileType() == 2) {
-				createRenter(conn, user);
+					if (user.getProfileType() == 1) {
+						loginIDuserID[1] = createSubletter(conn, user.getUsername());
+					}
+
+					else if (user.getProfileType() == 2) {
+						loginIDuserID[1] = createRenter(conn, user.getUsername());
+					}
+
+					rs = st.executeQuery("SELECT LAST_INSERT_ID()");
+					rs.next();
+					
+					loginIDuserID[0] = rs.getInt(1); //userID that was entered
+				}
+				
+				else {
+					loginIDuserID[0] = -2; // email is taken
+				}
 			}
 			
-		} catch (SQLException e) {
-			System.out.println("Subletters failed to insert Subletter into table");
+		}
+		
+		 catch (SQLException e) {
+			System.out.println("Login failed to insert new User into table");
 		} finally {
 			try {
 				if(st != null) st.close();
@@ -347,7 +399,43 @@ public class JDBCPost {
 				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
 			}
 		}
+		return loginIDuserID;
 	}
+	// Retrieves a User from the database given the user's ID
+	public User getUser(Connection conn, int userID) {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		User user = null;
+
+		try {
+			String query = "SELECT * FROM Users WHERE UserID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, userID);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				String username = rs.getString("Username");
+				String password = rs.getString("Password");
+				String email = rs.getString("Email");
+				String firstName = rs.getString("FirstName");
+				String lastName = rs.getString("LastName");
+				int profileType = rs.getInt("ProfileType");
+
+				user = new User(userID, username, password, email, firstName, lastName, profileType);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error retrieving user: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (ps != null) ps.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close resources: " + sqle.getMessage());
+			}
+		}
+		return user;
+	}
+
 
 	//Get password for login servlet
 	public String getPasswordHash(Connection conn, User user) {
@@ -382,6 +470,19 @@ public class JDBCPost {
 
 		return passwordHash;	
 	}
-
+public static String getPasswordHashForUsername(String username) throws SQLException {
+        String sql = "SELECT PasswordHash FROM Login WHERE Username = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("PasswordHash");
+                }
+            }
+        }
+        return null;
+    }
+	
 	
 }

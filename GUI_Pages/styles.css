@@ -72,6 +72,14 @@ footer {
     padding-bottom: 50px;
 }
 
+.house{
+    background: #7F7FD5;
+}
+
+.apartment{
+    background: #FF7F50;
+}
+
 .card-body{
     overflow: hidden;
 }
