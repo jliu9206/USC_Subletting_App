@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet"> 
+    <link href="styles.css" rel="stylesheet">
+    <script src = "loginregister.js"></script>
     <style>
         
         .container {
@@ -39,7 +40,7 @@
             <!-- Login Form -->
             <div class="col-md-6 login-section">
                 <h2>Been here before? Login!</h2>
-                <form action="LoginServlet" method="post"> 
+                <form method="post"> 
                     <div class="mb-3">
                         <label for="loginUsername" class="form-label">Username:</label>
                         <input type="text" class="form-control" id="loginUsername" name="username" placeholder="Enter username here" required>
@@ -48,7 +49,7 @@
                         <label for="loginPassword" class="form-label">Password:</label>
                         <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Enter password here" required>
                     </div>
-                    <button type="submit" id="login" class="btn btn-custom w-100">Login</button>
+                    <button type="submit" id="login" class="btn btn-custom w-100" onclick = "loginUser();">Login</button>
                 </form>
                 <button type="button" class="btn btn-secondary w-100" onclick="location.href='GuestServlet';">Continue as Guest</button>
             </div>
@@ -73,7 +74,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="registerEmail" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="registerEmail" name="email" placeholder="Enter email here" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
+                        <input type="email" class="form-control" id="registerEmail" name="email" placeholder="Enter email here" required title="Please enter a valid email address">
                     </div>
                     <!-- User type selection -->
                     <div class="user-type">

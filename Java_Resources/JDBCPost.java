@@ -1,3 +1,4 @@
+package finalproject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -45,7 +46,8 @@ public class JDBCPost {
 		Connection conn = null;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/Final_DB?user=" + user + "&password=" + pw);
+			// INSERT YOUR DB NAME HERE INSTEAD OF "finalproject", WHICH IS MINE
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/finalproject?user=" + user + "&password=" + pw);
 		}
 		catch(Exception e) {
 			System.out.println("connection to SQL credentials invalid, " + e.getMessage());
@@ -183,7 +185,7 @@ public static int insertSublease(Connection conn, Post post) {
 //	// TODO: RENTER JDBC CODE, waiting on Renter and Subletter classes
 //	//
 //	// 		Create a new RENTER profile in the SQL DB
-	public int createRenter(Connection conn, String username) {
+	public static int createRenter(Connection conn, String username) {
 		Statement st = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -192,11 +194,11 @@ public static int insertSublease(Connection conn, Post post) {
 		try {
 			st = conn.createStatement();
 			ps = conn.prepareStatement("INSERT INTO Renters(Username)"
-					+ "	VALUES (" 
-					+ username + ");"); // Confused about this field
+					+ "	VALUES (?);");
+			ps.setString(1, username);
 			
-			rs = ps.executeQuery();
-			rs.next()
+			ps.executeUpdate();
+			ps.close();
 
 			rs = st.executeQuery("SELECT LAST_INSERT_ID()");
 			rs.next();
@@ -232,12 +234,12 @@ public static int insertSublease(Connection conn, Post post) {
 				System.out.println("No such renter");
 			}
 			else {
-				String username = rs.getString("Username");
+				username = rs.getString("Username");
 				String email = rs.getString("Email");
 				String firstname = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
 				
-				r = new Renter(username, email, firstName, lastName);
+				r = new Renter(username, email, firstname, lastName);
 			}
 
 			
@@ -259,7 +261,7 @@ public static int insertSublease(Connection conn, Post post) {
 //	// TODO: SUBLETTER JDBC CODE
 //	//
 //	// 		Create a new SUBLETTER profile in the SQL DB
-	public int createSubletter(Connection conn, String username) {
+	public static int createSubletter(Connection conn, String username) {
 
 		Statement st = null;
 		PreparedStatement ps = null;
@@ -269,11 +271,11 @@ public static int insertSublease(Connection conn, Post post) {
 		try {
 			st = conn.createStatement();
 			ps = conn.prepareStatement("INSERT INTO Subletters(Username)"
-					+ "	VALUES (" 
-					+ username + ");");
+					+ "	VALUES (?);");
+			ps.setString(1, username);
 			
-			rs = ps.executeQuery();
-			rs.next();
+			ps.executeUpdate();
+			ps.close();
 
 			rs = st.executeQuery("SELECT LAST_INSERT_ID()");
 			rs.next();
@@ -311,12 +313,12 @@ public static int insertSublease(Connection conn, Post post) {
 				System.out.println("No such subletter");
 			}
 			else {
-				String username = rs.getString("Username");
+				//String username = rs.getString("Username");
 				String email = rs.getString("Email");
 				String firstname = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
 				
-				s = new Subletter(username, email, firstName, lastName);
+				s = new Subletter(username, email, firstname, lastName);
 			}
 
 			
@@ -335,72 +337,129 @@ public static int insertSublease(Connection conn, Post post) {
 		return s;	
 	}
 
-	public int[] createUser(Connection conn, User user) {
-		Statement st = null;
+	public static int[] createUser(Connection conn, User user) throws SQLException {
+		Statement st = conn.createStatement();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		//int[] typeAndUserID = {0, -1}; // username is taken
 		//int userID = -1;
-		int[] loginIDuserID = {-1, -1};
+		int loginIDuserID[] = {-1, -1};
 
 		try {
-			st = conn.createStatement();
-			ps = conn.prepareStatement("SELECT * FROM Login WHERE Username='" + username + "'");
-			rs = ps.executeQuery();
-			if (!rs.next()) {
-				//st = conn.createStatement();
-				ps = conn.prepareStatement("SELECT * FROM Login WHERE Email='" + email + "'");
-				rs = ps.executeQuery();
+			ps = conn.prepareStatement("SELECT * FROM Login WHERE Username = ?");
+	        ps.setString(1, user.getUsername());
+	        rs = ps.executeQuery();
+	        if (!rs.next()) {
+	            rs.close();
+	            ps.close();
 
-				if (!rs.next()) {
-					rs.close();
-					ps = conn.prepareStatement("INSERT INTO Login(Username, PasswordHash, Email, FirstName, LastName, TypeID)" 
-					+ " VALUES (" 
-					+ user.getUsername() + ", "
-					+ user.getPasswordHash() + ", "
-					+ user.getEmail() + ", "
-					+ user.getFirstName() + ", "
-					+ user.getLastName() + ", "
-					+ user.getProfileType()
-					+ ");");
+	            // Then, check if the email is already taken
+	            ps = conn.prepareStatement("SELECT * FROM Login WHERE Email = ?");
+	            ps.setString(1, user.getEmail());
+	            rs = ps.executeQuery();
 
-					rs = ps.executeQuery();
-					rs.next();
+	            if (!rs.next()) {
+	                rs.close();
+	                ps.close();
 
-					if (user.getProfileType() == 1) {
-						loginIDuserID[1] = createSubletter(conn, user.getUsername());
-					}
+	                // If neither is taken, insert the new user
+	                ps = conn.prepareStatement("INSERT INTO Login(Username, PasswordHash, Email, FirstName, LastName, TypeID) VALUES (?, ?, ?, ?, ?, ?)");
+	                ps.setString(1, user.getUsername());
+	                ps.setString(2, user.getPasswordHash());
+	                ps.setString(3, user.getEmail());
+	                ps.setString(4, user.getFirstName());
+	                ps.setString(5, user.getLastName());
+	                ps.setInt(6, user.getProfileType());
+	                int result = ps.executeUpdate();
+	                
 
-					else if (user.getProfileType() == 2) {
-						loginIDuserID[1] = createRenter(conn, user.getUsername());
-					}
+					ps.close();
+	                
+	                rs = st.executeQuery("SELECT LAST_INSERT_ID()");
+	                rs.next();
+	                loginIDuserID[0] = rs.getInt(1);
 
-					rs = st.executeQuery("SELECT LAST_INSERT_ID()");
-					rs.next();
-					
-					loginIDuserID[0] = rs.getInt(1); //userID that was entered
-				}
-				
-				else {
-					loginIDuserID[0] = -2; // email is taken
-				}
-			}
-			
-		}
-		
-		 catch (SQLException e) {
-			System.out.println("Login failed to insert new User into table");
-		} finally {
-			try {
-				if(st != null) st.close();
-				if(ps != null) ps.close();
-				if(rs != null) rs.close();
-			} catch (SQLException sqle) {
-				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
-			}
-		}
-		return loginIDuserID;
+	                // Check the user profile type and perform additional operations as necessary
+	                if (user.getProfileType() == 1) {
+	                    loginIDuserID[1] = createSubletter(conn, user.getUsername());
+	                } else if (user.getProfileType() == 2) {
+	                    loginIDuserID[1] = createRenter(conn, user.getUsername());
+	                }
+
+	            } else {
+	                loginIDuserID[0] = -2; // email is taken
+	            }
+	        } else {
+	            loginIDuserID[0] = -1; // username is taken
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (ps != null) ps.close();
+	        } catch (SQLException sqle) {
+	            System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+	        }
+	    }
+	    return loginIDuserID;
 	}
+	
+	public static int[] login(Connection conn, User user) throws SQLException {
+		Statement st = conn.createStatement();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int loginIDuserID[] = {-1, -1, 0};
+
+		try {
+			ps = conn.prepareStatement("SELECT ID, PasswordHash, TypeID FROM Login WHERE Username = ?");
+	        ps.setString(1, user.getUsername());
+	        rs = ps.executeQuery();
+	        if (rs.next()) {
+	            if (rs.getString(2).equals(user.getPasswordHash())) {
+	            	loginIDuserID[0] = rs.getInt(1);
+	            	
+	            	ps = conn.prepareStatement("SELECT ID FROM ? WHERE Username = ?");
+	            	
+	            	String table = (rs.getInt(3) == 1 ? "Subletters" : "Renters");
+	            		
+	            	ps.setString(1, table);
+	            	ps.setString(2, user.getUsername());
+	            	
+
+	            	rs = ps.executeQuery();
+	            	rs.next();
+	            	loginIDuserID[1] = rs.getInt(1);	
+	            	loginIDuserID[2] = rs.getInt(3);
+	            	rs.close();
+	            	//ps.close()
+	            }
+	            
+	            else {
+	            	loginIDuserID[0] = -2; // invalid username/password combination
+	            }
+	            
+	        }
+	        
+	        else {	        	
+	        	loginIDuserID[0] = -1; // username doesn't exist
+	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (ps != null) ps.close();
+	        } catch (SQLException sqle) {
+	            System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+	        }
+	    }
+	    return loginIDuserID;
+	}
+	
+	
+	
 	// Retrieves a User from the database given the user's ID
 	public User getUser(Connection conn, int userID) {
 		PreparedStatement ps = null;
@@ -421,7 +480,7 @@ public static int insertSublease(Connection conn, Post post) {
 				String lastName = rs.getString("LastName");
 				int profileType = rs.getInt("ProfileType");
 
-				user = new User(userID, username, password, email, firstName, lastName, profileType);
+				user = new User(username, password, email, firstName, lastName, profileType);
 			}
 		} catch (SQLException e) {
 			System.out.println("Error retrieving user: " + e.getMessage());
@@ -471,7 +530,7 @@ public static int insertSublease(Connection conn, Post post) {
 		return passwordHash;	
 	}
 public static String getPasswordHashForUsername(String username) throws SQLException {
-        String sql = "SELECT PasswordHash FROM Login WHERE Username = ?";
+        /*String sql = "SELECT PasswordHash FROM Login WHERE Username = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
@@ -480,7 +539,7 @@ public static String getPasswordHashForUsername(String username) throws SQLExcep
                     return rs.getString("PasswordHash");
                 }
             }
-        }
+        }*/
         return null;
     }
 	

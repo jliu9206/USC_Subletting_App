@@ -1,3 +1,4 @@
+package finalproject;
 class SearchFilter {
 
     private String title;
@@ -13,7 +14,7 @@ class SearchFilter {
 
 
 
-    PropertyType INT,
+    /*PropertyType INT,
     Address VARCHAR(256),
 
     AvailabilityStart DATE,
@@ -21,6 +22,6 @@ class SearchFilter {
     Description TEXT,
     Renter INT,
     FOREIGN KEY (PropertyType) REFERENCES PropType(TypeID),
-	FOREIGN KEY (Renter) REFERENCES Renters(ID)
+	FOREIGN KEY (Renter) REFERENCES Renters(ID)*/
    
 }

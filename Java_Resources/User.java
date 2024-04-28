@@ -1,3 +1,4 @@
+package finalproject;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -10,9 +11,11 @@ class User {
     private String firstName;
     private String lastName;
     private int profileType;
+    
+    public User() {}
 
-    public User(Integer userID, String username, String password, String email, String firstName, String lastName, int profileType) {
-        this.userID = userID;
+    public User(String username, String password, String email, String firstName, String lastName, int profileType) {
+        //this.userID = userID;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -63,6 +66,11 @@ class User {
     public String getEmail() {
         return email;
     }
+    
+    public String getPasswordHash() {
+    	
+    	return password;
+    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -92,9 +100,14 @@ class User {
 class Subletter extends User {
     private List<Post> favoriteProperties;
 
-    public Subletter(Integer userID, String username, String password, String email, int profileType) {
+    /*public Subletter(Integer userID, String username, String password, String email, int profileType) {
         super(userID, username, password, email, profileType);
         this.favoriteProperties = new ArrayList<>();
+    }*/
+    
+    public Subletter() {
+    	
+    	
     }
 
     public Subletter(String username, String email, String firstName, String lastName) {
@@ -121,21 +134,24 @@ class Subletter extends User {
         return new ArrayList<>();
     }
 
-    public void leaveReview(Post property, Review review) {
+    /*public void leaveReview(Post property, Review review) {
         // need to integrate with Post class, adds a review to the Review list
         property.addReview(review);
-    }
+    }*/
 }
 
 
 
 // Subletter class that extends User
 class Renter extends User {
-    //private List<Post> properties;
+    private List<Post> properties;
 
-    public Renter(Integer userID, String username, String password, String email, String profileType) {
-        super(userID, username, password, email, profileType);
+    /*public Renter(Integer userID, String username, String password, String email, String profileType) {
+        //super(userID, username, password, email, profileType);
         properties = new ArrayList<>();
+    }*/
+    public Renter() {
+    	
     }
 
     public Renter(String username, String email, String firstName, String lastName) {

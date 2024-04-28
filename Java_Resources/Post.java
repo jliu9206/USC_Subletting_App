@@ -1,3 +1,7 @@
+package finalproject;
+
+import java.util.ArrayList;
+
 public class Post{
 	private int ID;
 	private String Title;
