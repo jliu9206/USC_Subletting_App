@@ -3,14 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detailed Profile - USC Subletting Web Application</title>
+    <title>Create a New Listing - USC Subletting Web Application</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    	#diff-users {
+    		width: 20%;
+    	}
+    	#chat {
+    		align-items: center;
+    		height: 80%;
+    		width: 80%;
+    		background: white;
+    	}
+    	#messageInput {
+    	    border-radius: 5px;
+    	}
+    	#message-button {
+    		border-radius: 5px;
+    	}
+    	#mychat {
+    		display: flex;
+    		justify-content: center;
+    	}
+		.message-chat {
+	      border-radius: 5px;
+	      padding: 10px;
+	      background-color: #f9f9f9;
+	      width: 60%;
+	    }
+	   .container {
+	      display: flex;
+	      justify-content: center;
+	      align-items: center;
+	      margin-top: 10%;
+	      width: 80%;
+	    }
+	      #message-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .rounded-input {
+            border-radius: 20px; 
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        #send-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        #send-button img {
+            width: 20px; /* Adjust arrow icon size */
+            margin-right: 5px;
+        }
+    </style>
 </head>
-<body>
+<body onload="connectToServer()">
     <nav class="navbar navbar-expand-lg ">
         <div class="container-fluid">
             <a class="navbar-brand" href="browse.html">USC Subletting</a>
@@ -34,41 +96,48 @@
             </div>
         </div>
     </nav>
-
-    
-    <div class="container mt-4">
-        <h1>Edit Your Profile!</h1>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="[Your Name]">
-                <label for="phoneNumber" class="form-label">Phone Number</label>
-                <input type="text" class="form-control" id="phoneNumber" placeholder="XXX-XXX-XXXX">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="xxxxxxxxxxx@xxx.xxx">
+ 	    <div class="container">
+        <form name="chatform" class="message-chat">
+            <div id="mychat"></div>
+            <br />
+            <div id="message-input">
+                <input id="box" class="rounded-input" type="text" name="message" placeholder="Message!" />
+                <button id="send-button" type="button" onclick="sendMessage();" class="fa fa-arrow-circle-up"></button>
             </div>
-            <div class="col-md-6">
-                <label for="bio" class="form-label">Bio</label>
-                <textarea class="form-control" id="bio" rows="3" placeholder="[All about you]"></textarea>
-                <label for="photoUpload" class="form-label">Profile Photo</label>
-                <input type="file" class="form-control mt-2" id="photoUpload">
-            </div>
-        </div>
-            <div class="mt-4">
-            	<button type="submit" class="btn btn-custom">Save</button>
-            </div>
-
-        <p class="mt-4">Your Current Rating:</p>
-        <div class="rating">
-            <!-- display stars here using back end info either with stored photos or something else  -->
-        </div>
+        </form>
     </div>
-
     <footer>
         <p>© 2024 USC Subletting. All rights reserved.</p>
     </footer>
 
     <!-- Bootstrap JS bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- <script src="websocket.js"></script> -->
+	<script>
+			var socket;
+			let user = localstorage.getItem("username");
+			function connectToServer() {
+				//change path based on your folder name
+				socket = new WebSocket("ws://localhost:8080/CSCI201Group17/ws");
+				socket.onopen = function(event) {
+					//allow message to open as indication of start?
+					//user name
+					document.getElementById("mychat").innerHTML += "Connected!<br />";
+				}
+				socket.onmessage = function(event) {
+					document.getElementById("mychat").innerHTML += event.data + "<br />";
+				}
+				socket.onclose = function(event) {
+					document.getElementById("mychat").innerHTML += "Disconnected!<br />";
+				}
+			}
+			function sendMessage() {
+				//let firstName = localstorage.getItem("firstName");
+				//let lastName = localstorage.getItem("lastName");
+				let user = "placeholder";
+				socket.send(user + ": " + document.chatform.message.value);
+				return false;
+			}
+		</script>
 </body>
-</html>
+</html> 
