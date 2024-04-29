@@ -1,6 +1,7 @@
 -- -- drop table statements for SQL testing
 DROP TABLE Ratings;
 DROP TABLE FavoriteProperties;
+DROP TABLE Image;
 DROP TABLE Post;
 DROP TABLE Renters;
 DROP TABLE Subletters;
@@ -70,6 +71,14 @@ CREATE TABLE Post (
 	FOREIGN KEY (Renter) REFERENCES Renters(ID)
 );
 
+CREATE TABLE Image(
+	ID INT AUTO_INCREMENT PRIMARY KEY,
+    ImageData BLOB,
+    SourcePost INT,
+    Thumbnail BOOL,
+    FOREIGN KEY (SourcePost) References Post(ID)
+);
+
 CREATE TABLE ReviewDirection (
     DirectionID INT AUTO_INCREMENT PRIMARY KEY,
     DirectionName VARCHAR(50)
@@ -101,10 +110,12 @@ CREATE TABLE FavoriteProperties (
 
 INSERT INTO Login (Username, PasswordHash, Email, FirstName, LastName, TypeID) VALUES
 ('user1', 'password123', 'ttrojan@usc.edu', 'Tommy', 'Trojan', 2),
-('user2', 'password456', 'woofwoof@usc.edu', 'George', 'Tirebiter', 1);
+('user2', 'password456', 'woofwoof@usc.edu', 'George', 'Tirebiter', 1),
+('user3', 'password789', 'hecuba@usc.edu', 'Hecuba', 'Lastname', 2);
 
 INSERT INTO Renters (Username) VALUES
-('user1');
+('user1'),
+('user3');
 
 INSERT INTO Subletters (Username) VALUES
 ('user2');
@@ -114,9 +125,9 @@ INSERT INTO Post (Title, PropertyType, Address, MonthlyPrice, NumberOfBedrooms, 
 ('Freshman Dorm Room', 3, '3096 McClintock Ave.', 1000.00, 1, 1, 800.00, '2024-05-01', '2024-06-01', 'This is a room in McCarthy Honors College', 2);
 
 INSERT INTO Ratings (NumberOfStars, Comments, RenterID, SubletID, ReviewDirectionID) VALUES
-(5, 'Great experience!', 3, 1, 1),
-(4, 'Good service.', 4, 2, 2);
+(5, 'Great experience!', 1, 1, 1),
+(4, 'Good service.', 1, 1, 2);
 
 INSERT INTO FavoriteProperties (PostID, SubletID) VALUES
-(1, 1),
-(2, 2);
+(1, 1);
+-- (2, 2);

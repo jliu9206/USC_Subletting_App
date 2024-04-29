@@ -165,7 +165,7 @@ function search(){
 		if(response.ok){
 			return response.json();
 		} else{
-			throw new Error("Data not there?");
+			throw new Error("Data not there");
 		}
 	})
 	.then(parsedData => {
