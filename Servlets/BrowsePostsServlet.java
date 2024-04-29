@@ -3,6 +3,9 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*; 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.util.List;
 
 //NEED TO IMPORT POST CLASS
 
@@ -14,7 +17,7 @@ public class BrowsePostsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected String service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         PrintWriter pw = response.getWriter();
 		response.setContentType("application/json");
@@ -28,7 +31,7 @@ public class BrowsePostsServlet extends HttpServlet {
 		
         //browseSublease probably returns empty array if finds nothing
         //print error messages:
-		if (all.getPostList() == null || all.getPostList().length() == 0)
+		if (all.getPostList() == null || all.getPostList().size() == 0)
 		{
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			String error = "FAILED to get all subleases: retrieved no listings";

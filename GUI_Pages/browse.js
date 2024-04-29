@@ -42,10 +42,12 @@ function addProperty(propertyType, description, price, picture, postId){
     }
 }
 
+// Sample cards, for testing purposes
 addProperty("House", "testing 1 : Single room in house near Ralph's<br>Available May 2024-August 2024", 2, null, 1);
 addProperty("Apartment", "testing 2: Double room in apartment on frat row<br>Available May 2024-August 2024", 5000000000000, null, 2);
 addProperty("Apartment", "testing 3", 450, null, 3);
 addProperty("House", "testing 4", 1800, null, 4);
+// end of sample cards
 
 const data = {
     username : localStorage.getItem('username') //see what the username is

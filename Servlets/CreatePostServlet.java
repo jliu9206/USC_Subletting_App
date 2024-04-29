@@ -3,6 +3,8 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*; 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
 
 //IMPORT THE GSON JAR
 import com.google.gson.Gson;
@@ -25,9 +27,8 @@ public class CreatePostServlet extends HttpServlet {
 
         // (Connection conn, Post post) {
 
-        Connection conn = connectSQL("root", "@CS201Pass");
-
-        int val = JDBC.insertSublease(conn, post);
+        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
+        int val = JDBCPost.insertSublease(conn, post);
         
         Gson gson = new Gson();
 		
