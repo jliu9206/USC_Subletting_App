@@ -591,5 +591,89 @@ public static String getPasswordHashForUsername(String username) throws SQLExcep
         return null;
     }
 	
+	public static ArrayList<Post> search(Connection conn, SearchFilter sf) throws SQLException {
+		Statement st = conn.createStatement();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ArrayList<Post> posts = new ArrayList<Post>();
+		String query;
 	
+		try {
+			
+				query = "SELECT * FROM Post WHERE (";
+			
+				if (sf.name.length() > 0) {
+					query += "(Title LIKE \"%" + sf.name.toLowerCase() + "%\") AND ";
+				}
+				
+				if (sf.propType == 0) {
+					
+					query += "(PropertyType > 0) ";
+				}
+				
+				else {
+					
+					query += "(PropertyType = " + sf.propType + ") ";
+				}
+				
+				if (sf.priceMin != -1 && sf.priceMax != -1) {
+					query += "AND (MonthlyPrice BETWEEN " + sf.priceMin + " AND " + sf.priceMax + ") ";
+				}
+				
+				else if (sf.priceMin != -1) {
+					query += "AND (MonthlyPrice >= " + sf.priceMin + ") ";
+				}
+				
+				else if (sf.priceMax != -1) {
+					query += "AND (MonthlyPrice <= " + sf.priceMax + ") ";
+				}
+				
+				if (sf.bedrooms != -1) {
+					query += "AND (NumberOfBedrooms = " + sf.bedrooms + ") ";
+				}
+				
+				if (sf.bathrooms != -1) {
+					query += "AND (NumberOfBathrooms = " + sf.bathrooms + ") ";
+				}
+				
+				if (sf.dateFrom.length() > 0 && sf.dateTo.length() > 0) {
+					query += "AND (AvailabilityStart >= \"" + sf.dateFrom + "\" AND AvailabilityEnd <= \"" + sf.dateTo + "\") ";
+				}
+				
+				else if (sf.dateFrom.length() > 0) {
+					query += "AND (AvailabilityStart >= \"" + sf.dateFrom + "\") ";
+				}
+				
+				else if (sf.dateTo.length() > 0) {
+					query += "AND (AvailabilityEnd <= \"" + sf.dateTo + "\") ";
+				}
+				
+				if (sf.size != -1) {
+					query += "AND (Size >= " + sf.size + ") ";
+				}
+
+				query += ") ORDER BY MonthlyPrice;";
+
+			System.out.println(query);
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				
+				Post p = new Post(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getString(4), rs.getDouble(5),
+						rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getString(9), rs.getString(10),
+						rs.getString(11), rs.getInt(12));
+				
+				posts.add(p);
+			}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (ps != null) ps.close();
+	        } catch (SQLException sqle) {
+	            System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+	        }
+	    }
+		return posts;
+	}	
 }

@@ -90,4 +90,85 @@ fetch('BrowsePostsServlet', {
 })
 .catch(error => {
     alert(error);
-}); 
+});
+
+function search(){
+	event.preventDefault();
+	
+	const name = document.querySelector("#name").value.trim();
+	console.log(name);
+    const propType = document.querySelector("#propType").value;
+    const size = document.querySelector("#size").value;
+    
+    
+    const dateFrom = document.querySelector("#dateFrom").value;
+    const dateTo = document.querySelector("#dateTo").value;
+    const bedrooms = document.querySelector("#bedrooms").value;
+    const bathrooms = document.querySelector("#bathrooms").value;
+    
+ 	const priceMin = document.querySelector("#priceMin").value;
+    const priceMax = document.querySelector("#priceMax").value;
+    
+    const array = new Array();
+    
+    array.push(name);
+	array.push(dateFrom);
+	array.push(dateTo);
+	array.push(size);
+	array.push(bedrooms);
+	array.push(bathrooms);
+	array.push(priceMin);
+	array.push(priceMax);
+	array.push(propType);
+	
+	for (let i = 0; i < array.length; i++) {
+		
+		if (array[i].length == 0 && (i > 2)) {
+			array[i] = -1;
+		}
+		
+		else if ((i > 2)) {
+			array[i] = parseInt(array[i]);
+		}
+		
+		else if (array[i].length == 0) {
+			array[i] = "";
+		}
+	}
+	
+	const searchFilter = {
+		name: array[0], 
+		dateFrom: array[1],
+		dateTo: array[2],
+		size: array[3],
+		bedrooms: array[4], 
+		bathrooms: array[5],
+		priceMin: array[6],
+		priceMax: array[7],
+		propType: array[8]
+		
+	};
+	
+	
+	console.log(searchFilter);
+
+	fetch('SearchServlet', {
+	    method: 'POST',
+	    headers: {
+	        'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(searchFilter),
+		})
+		
+	.then(response => {
+		
+		return response.json();
+	})
+	.then(data => {
+		
+		console.log(data);
+	})
+	.catch(error => {
+	    alert(error);
+	});
+}

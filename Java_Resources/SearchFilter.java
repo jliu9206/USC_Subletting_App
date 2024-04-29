@@ -1,27 +1,24 @@
 package finalproject;
 class SearchFilter {
 
-    private String title;
+	public String name;
+    public int propType;
+    public int size;
+    public String dateFrom;
+    public String dateTo;
+    public int bedrooms;
+    public int bathrooms;
+    public int priceMin;
+    public int priceMax;
     
-    private int bedrooms;
-    private int bathrooms;
+    public SearchFilter() {
+    	
+    	
+    	
+    }
     
-    
-    private double monthlyPrice;
-    private double size;
+    public boolean isEmpty() {
+    	return (name.isBlank() && propType == 0 && size == -1 && dateFrom.isBlank() && dateTo.isBlank() && bedrooms == -1 && bathrooms == -1 && priceMin == -1 && priceMax == -1);
+    }
 
-    private int renter;
-
-
-
-    /*PropertyType INT,
-    Address VARCHAR(256),
-
-    AvailabilityStart DATE,
-    AvailabilityEnd DATE,
-    Description TEXT,
-    Renter INT,
-    FOREIGN KEY (PropertyType) REFERENCES PropType(TypeID),
-	FOREIGN KEY (Renter) REFERENCES Renters(ID)*/
-   
 }

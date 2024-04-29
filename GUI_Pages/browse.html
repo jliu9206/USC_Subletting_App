@@ -30,58 +30,82 @@
 <body>
 
     <nav class="navbar navbar-expand-lg ">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="browse.html">USC Subletting</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" href="browse.html">Browse</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="profile.html">Profile</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="Messages.html">Messages</a>
-          </li>
-      </ul>
-
-      <p>You are logged in as</p>
-      <button onclick="logout();" class="btn" type="button">Logout</button>
-  </div>
-</div>
-</div>
-</nav>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="browse.html">USC Subletting</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="browse.html">Browse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Messages.html">Messages</a>
+                    </li>
+                </ul>
+                <p id = "loggedInAs">You are logged in as</p>
+                <button onclick="logout();" class="btn" type="button">Logout</button>
+            </div>
+        </div>
+    
+    </nav>
 
 <!-- Search Form -->
 <div class="container mt-4">
     <h1>Browse Listings</h1>
-    <form method="get" action="SearchServlet">
+    <form method="get">
         <div class="row g-3">
             <div class="col-sm-4">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" class="form-control" placeholder="Listing name">
+                <input type="text" id = "name" name="name" class="form-control" placeholder="Listing name">
             </div>
             <div class="col-sm-4">
-                <label for="dateFrom" class="form-label">Availability Date From</label>
-                <input type="date" name="dateFrom" class="form-control">
+                <label for="propType" class="form-label">Property Type</label><br>
+			  <select name="propType" id="propType" class = "form-control">
+			  <optgroup label = "Choose property type">
+			  	<option value=0>All</option>
+			  	<option value=1>Apartment</option>
+			      <option value=2>House</option>
+			      <option value=3>Room</option>
+			  </optgroup>
+			  </select>
+            </div>
+            
+            <div class="col-sm-4">
+                <label for="size" class="form-label">Size (sq. ft.)</label>
+                <input type="number" id = "size" name="size" class="form-control" placeholder="2500" min = 0>
+            </div>
+            
+            <div class="col-sm-4">
+                <label for="dateFrom" class="form-label">Start Date</label>
+                <input type="date" id = "dateFrom" name="dateFrom" class="form-control">
             </div>
             <div class="col-sm-4">
-                <label for="dateTo" class="form-label">Availability Date To</label>
-                <input type="date" name="dateTo" class="form-control">
+                <label for="dateTo" class="form-label">End Date</label>
+                <input type="date" id = "dateTo" name="dateTo" class="form-control">
             </div>
             <div class="col-sm-4">
-                <label for="priceMin" class="form-label">Min Price</label>
-                <input type="number" name="priceMin" class="form-control" placeholder="0">
+                <label for="bedrooms" class="form-label">Number of Bedrooms</label>
+                <input type="number" id = "bedrooms" name="bedrooms" class="form-control" placeholder = 1 min = 1>
             </div>
             <div class="col-sm-4">
-                <label for="priceMax" class="form-label">Max Price</label>
-                <input type="number" name="priceMax" class="form-control" placeholder="10000">
+                <label for="bathrooms" class="form-label">Number of Bathrooms</label>
+                <input type="number" id = "bathrooms" name="bathrooms" class="form-control" placeholder = 1 min = 1>
+            </div>
+            <div class="col-sm-4">
+                <label for="priceMin" class="form-label">Minimum Monthly Price</label>
+                <input type="number" id = "priceMin" name="priceMin" class="form-control" placeholder="0" min = 0>
+            </div>
+            <div class="col-sm-4">
+                <label for="priceMax" class="form-label">Maximum Monthly Price</label>
+                <input type="number" id = "priceMax" name="priceMax" class="form-control" placeholder="10000" min = 0>
             </div>
             <div class="col-12">
-                <button type="submit" class="btn btn-custom">Search</button>
+                <button type="submit" onclick = "search();" class="btn btn-custom">Search</button>
             </div>
         </div>
     </form>
