@@ -77,11 +77,9 @@ fetch('BrowsePostsServlet', {
     }
     else
     {
-		console.log(responseData);
-		console.log(responseData["postList"]);
         for(let i = 0; i < responseData["postList"].length; i++){
             let prop = responseData["postList"][i];
-            let title = prop["Title"]
+            let title = 		prop["Title"]
             let propertyType =  prop["PropertyType"];
             let description  =  prop["Description"];
             let price =         prop["MonthlyPrice"];
@@ -153,7 +151,7 @@ function search(){
 	};
 	
 	
-	console.log(searchFilter);
+	//console.log(searchFilter);
 
 	fetch('SearchServlet', {
 	    method: 'POST',
@@ -171,7 +169,18 @@ function search(){
 		}
 	})
 	.then(parsedData => {
-		console.log(parsedData);
+		console.log(parsedData)
+		document.getElementById("listings").innerHTML = "";
+		for(let i = 0; i < parsedData.length; i++){
+            let prop = 			parsedData[i];
+            let title = 		prop["Title"]
+            let propertyType =  prop["PropertyType"];
+            let description  =  prop["Description"];
+            let price =         prop["MonthlyPrice"];
+            let postId =        prop["ID"];
+
+            addProperty(title, propertyType, description, price, null, postId);
+        }
 	})
 	.catch(error => {
 	    alert(error);
