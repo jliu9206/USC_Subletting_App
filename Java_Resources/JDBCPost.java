@@ -181,7 +181,53 @@ public static int insertSublease(Connection conn, Post post) {
 		
 		return p;
 	}
-	
+
+	//		From the SYSTEM, get brief synopsis of all posts [CAN USE ANOTHER DATA STRUCTURE HERE]
+	public static List<Post> browseSubleases(Connection conn) {
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Post> browseList = new ArrayList<Post>(); //DATA STRUCTURE
+
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement(
+					"SELECT * FROM Post;" );
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				int ID = rs.getInt("ID");
+				String title = rs.getString("Title");
+				int propType = rs.getInt("PropertyType");
+				String address = rs.getString("Address");
+				double monthlyPrice = rs.getDouble("MonthlyPrice");
+				int bedrooms = rs.getInt("NumberOfBedrooms");
+				int bathrooms = rs.getInt("NumberOfBathrooms");
+				double size = rs.getDouble("Size");
+				String startDate = rs.getString("AvailabilityStart");
+				String endDate = rs.getString("AvailabilityEnd");
+				String desc = rs.getString("Description");
+				int renter = rs.getInt("Renter");
+				
+				Post p = new Post(ID, title, propType, address, monthlyPrice, bedrooms, bathrooms,
+						size, startDate, endDate, desc, renter);
+				browseList.add(p); // is this syntax correct
+			}
+		} catch (SQLException e) {
+			System.out.println("SYSTEM failed to get sublease post");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+		
+		return browseList;
+	}
+
 //	// TODO: RENTER JDBC CODE, waiting on Renter and Subletter classes
 //	//
 //	// 		Create a new RENTER profile in the SQL DB
