@@ -5,7 +5,7 @@ Use servlet + JDBC to get all properties
 
 //DetailedPost.html?postId=
 
-function addProperty(propertyType, description, price, picture, postId){
+function addProperty(title, propertyType, description, price, picture, postId){
     let postWrapper = document.createElement("div")
     let card = document.createElement("div")
     let cardBody = document.createElement("div")
@@ -15,16 +15,16 @@ function addProperty(propertyType, description, price, picture, postId){
     let h6 = document.createElement("h6")
     
     postWrapper.classList.add("col")
-    card.classList.add(propertyType == "House"? "house" : "apartment", "card", "h-100")
+    card.classList.add(propertyType == 1? "house" : 2? "apartment": "room", "card", "h-100")
     cardBody.classList.add("card-body")
     img.classList.add("images")
     h5.classList.add("card-title")
     p.classList.add("card-text")
     h6.classList.add("card-subtitle",  "mb-2", "text-muted")
     
-    img.src = picture == null ? "image.png" : picture
+    img.src = picture == null || picture == ""? "image.png" : picture
     img.alt = "Picture of property listing"
-    h5.innerHTML = propertyType + " listing"
+    h5.innerHTML = (propertyType == 1? "House ": propertyType == 2?  "Apartment": "Room"  )+ " listing: " + title
     p.innerHTML = description
     h6. innerHTML = "$" + price + "/month"
     
@@ -43,10 +43,10 @@ function addProperty(propertyType, description, price, picture, postId){
 }
 
 // Sample cards, for testing purposes
-addProperty("House", "testing 1 : Single room in house near Ralph's<br>Available May 2024-August 2024", 2, null, 1);
-addProperty("Apartment", "testing 2: Double room in apartment on frat row<br>Available May 2024-August 2024", 5000000000000, null, 2);
-addProperty("Apartment", "testing 3", 450, null, 3);
-addProperty("House", "testing 4", 1800, null, 4);
+addProperty("chipotle", 1, "testing 1 : Single room in house near Ralph's<br>Available May 2024-August 2024", 2, null, 1);
+addProperty("boy hall", 2, "testing 2: Double room in apartment on frat row<br>Available May 2024-August 2024", 5000000000000, null, 2);
+addProperty("UCLA", 3, "testing 3", 450, null, 3);
+addProperty("Oppenheimer Tower", 1, "testing 4", 1800, null, 4);
 // end of sample cards
 
 const data = {
@@ -63,28 +63,31 @@ fetch('BrowsePostsServlet', {
 .then(response => {
     if (response.ok)
     {
-        alert("Received all listings");
+		return response.json();
     }
     else 
     {
-        return response.json();
-    }
+		console.log("failed to retrieve listings");
+	}
 })
 .then(responseData => {
-    if (responseData != null)
+    if (responseData == null)
     {
-        alert(responseData);
+        alert("data is null");
     }
     else
     {
-        for(let i = 0; i < responseData.length; i++){
-            let prop = responseData[i];
+		console.log(responseData);
+		console.log(responseData["postList"]);
+        for(let i = 0; i < responseData["postList"].length; i++){
+            let prop = responseData["postList"][i];
+            let title = prop["Title"]
             let propertyType =  prop["PropertyType"];
             let description  =  prop["Description"];
             let price =         prop["MonthlyPrice"];
             let postId =        prop["ID"];
 
-            addProperty(propertyType, description, price, postId);
+            addProperty(title, propertyType, description, price, null, postId);
         }
     }
 })
@@ -161,12 +164,14 @@ function search(){
 		})
 		
 	.then(response => {
-		
-		return response.json();
+		if(response.ok){
+			return response.json();
+		} else{
+			throw new Error("Data not there?");
+		}
 	})
-	.then(data => {
-		
-		console.log(data);
+	.then(parsedData => {
+		console.log(parsedData);
 	})
 	.catch(error => {
 	    alert(error);

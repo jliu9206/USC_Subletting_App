@@ -213,7 +213,7 @@ public static int insertSublease(Connection conn, Post post) {
 				
 				Post p = new Post(ID, title, propType, address, monthlyPrice, bedrooms, bathrooms,
 						size, startDate, endDate, desc, renter);
-				browseList.add(p); // is this syntax correct
+				browseList.add(p);
 			}
 		} catch (SQLException e) {
 			System.out.println("SYSTEM failed to get sublease post");
@@ -577,7 +577,8 @@ public static int insertSublease(Connection conn, Post post) {
 
 		return passwordHash;	
 	}
-public static String getPasswordHashForUsername(String username) throws SQLException {
+	
+	public static String getPasswordHashForUsername(String username) throws SQLException {
         /*String sql = "SELECT PasswordHash FROM Login WHERE Username = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
