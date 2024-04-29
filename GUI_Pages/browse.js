@@ -20,25 +20,32 @@ function addProperty(propertyType, description, price, picture, postId){
     img.classList.add("images")
     h5.classList.add("card-title")
     p.classList.add("card-text")
-    h6.classList.add("card-subtitle mb-2 text-muted")
+    h6.classList.add("card-subtitle",  "mb-2", "text-muted")
     
-    img.src = picture == "" ? "image.png" : picture
+    img.src = picture == null ? "image.png" : picture
     img.alt = "Picture of property listing"
-    h5.innerHTML = "Property listing"
+    h5.innerHTML = propertyType + " listing"
     p.innerHTML = description
     h6. innerHTML = "$" + price + "/month"
     
+    cardBody.appendChild(img)
     cardBody.appendChild(h5)
     cardBody.appendChild(p)
     cardBody.appendChild(h6)
     card.appendChild(cardBody)
     postWrapper.appendChild(card)
+    document.getElementById("listings").appendChild(postWrapper);
 
     card.onclick = () => {
         let url = "DetailedPost.html?postId="+postId;
         window.location.href = url;
     }
 }
+
+addProperty("House", "testing 1 : Single room in house near Ralph's<br>Available May 2024-August 2024", 2, null, 1);
+addProperty("Apartment", "testing 2: Double room in apartment on frat row<br>Available May 2024-August 2024", 5000000000000, null, 2);
+addProperty("Apartment", "testing 3", 450, null, 3);
+addProperty("House", "testing 4", 1800, null, 4);
 
 const data = {
     username : localStorage.getItem('username') //see what the username is
