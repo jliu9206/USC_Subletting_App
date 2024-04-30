@@ -38,6 +38,8 @@ function addProperty(title, propertyType, description, price, picture, postId){
 
     card.onclick = () => {
         let url = "DetailedPost.html?postId="+postId;
+	//the id of the post the User wants to see specific info about
+        localStorage.setItem("postID", postId);
         window.location.href = url;
     }
 }
