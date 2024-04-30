@@ -15,7 +15,7 @@
 			justify-content: center;  
 			width: auto;
 			height: auto;  	
-    	}
+    		}
 		#footer {
 			margin-bottom: 0;
 			position: absolute;
@@ -40,20 +40,20 @@
 			width: 100%;
 		}
 		 #summary-section {
-            border: 2px solid rgb(215, 216, 216);
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Four columns with equal width */
-            gap: 10px; /* Gap between columns */
-            padding: 20px;
-        }
-        .summary-item {
-            /* Additional styles for each summary item */
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-        }
+           	 border: 2px solid rgb(215, 216, 216);
+            	border-radius: 10px;
+            	display: grid;
+            	grid-template-columns: repeat(4, 1fr); /* Four columns with equal width */
+            	gap: 10px; /* Gap between columns */
+            	padding: 20px;
+        	}
+	        .summary-item {
+	            /* Additional styles for each summary item */
+	            text-align: center;
+	            border: 1px solid #ccc;
+	            border-radius: 5px;
+	            padding: 10px;
+	        }
     </style>
 </head>
 <body>
@@ -82,6 +82,7 @@
     </nav>
 	
 	<div id="photo-popup">
+	<!--change to images from database-->
     	<img src="test-img.jpeg" class="photos" alt="IMAGE" />
     	<img src="test-img-2.jpeg" class="photos" alt="IMAGE" />
 	</div>
@@ -123,36 +124,8 @@
 
     <!-- Bootstrap JS bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- <script src="websocket.js"></script> -->
-	<script>
-			var socket;
-			let user = localstorage.getItem("username");
-			function connectToServer() {
-				//change path based on your folder name
-				socket = new WebSocket("ws://localhost:8080/CSCI201Group17/ws");
-				socket.onopen = function(event) {
-					//allow message to open as indication of start?
-					//user name
-					document.getElementById("mychat").innerHTML += "Connected!<br />";
-				}
-				socket.onmessage = function(event) {
-					document.getElementById("mychat").innerHTML += event.data + "<br />";
-				}
-				socket.onclose = function(event) {
-					document.getElementById("mychat").innerHTML += "Disconnected!<br />";
-				}
-			}
-			function sendMessage() {
-				//let firstName = localstorage.getItem("firstName");
-				//let lastName = localstorage.getItem("lastName");
-				let user = "placeholder";
-				socket.send(user + ": " + document.chatform.message.value);
-				return false;
-			}
-		</script>
-		
     <script>
-   		document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
+   	document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
     	var listingName = document.getElementById("listing-name");
     	var rating = document.getElementById("rating");
     	var address = document.getElementById("address");
@@ -162,12 +135,10 @@
     	var rooms = document.getElementById("num-rooms");
     	var bath = document.getElementById("num-bath");
     	var size = document.getElementById("size");
-	 	const data = {
-	 		//localStorage.getItem("ID");
-	 		//REPLACE WHEN BROWSE IS WORKING
-	 		ID: 1,
-	 	};
-	    console.log("got here");
+
+	 const data = {
+	 	ID: localStorage.getItem("postID")
+	 };
     	fetch('GetPostServlet', {
     	    method: 'POST',
     	    headers: {
@@ -183,8 +154,10 @@
 	    }
 		})
 		.then(data => {
-		    listingName.innerHTML = data.Title;
-		    address.innerHTML = data.Address;
+		    	listingName.innerHTML = data.Title;
+		    	address.innerHTML = data.Address;
+	    		//keeping curr listing's address for Messages
+	    		localStorage.setItem("address", address.innerHTML);
 			desc.innerHTML = data.Description;
 			availability.innerHTML = data.AvailabilityStart + " to " + data.AvailabilityEnd;
 			rent.innerHTML = "$" + data.MonthlyPrice;
@@ -197,7 +170,7 @@
 		});
     	
     	document.getElementById("contact-button").addEventListener('click', function() {
-    		window.location.href = 'Messages.html';
+     		window.location.href = 'Messages.html'; 
     	})
     </script>
 </body>
