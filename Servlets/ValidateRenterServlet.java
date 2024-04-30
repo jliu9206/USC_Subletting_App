@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+//UNNECESSARY NOW !! We are storing the renterID in local storage
 @WebServlet("/ValidateRenterServlet")
 public class ValidateRenterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +26,7 @@ public class ValidateRenterServlet extends HttpServlet {
 		Connection conn = JDBCPost.connectSQL("root", "[your password]");
 		
 		Gson g = new Gson();
-		int renterId = JDBCPost.getRenterId(conn, request.getParameter("username"));
+		int renterId = JDBCPost.getRenterId(conn, request.getParameter("Username"));
 		RenterId id = new RenterId(renterId);
 		String jsonString = g.toJson(id);
 		

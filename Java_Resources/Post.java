@@ -35,6 +35,23 @@ public class Post{
 		Renter = renterID;
 	}
 	
+	//Don't delete this, using for CreatePostServlet, need all inputs to be strings for GSON
+	public Post(String title, String propType, String address, String price ,
+			String bedrooms, String bathrooms, String size, String startDate, String endDate,
+			String desc, String renterID) {
+		Title = title;
+		PropertyType = Integer.parseInt(propType);
+		Address = address;
+		MonthlyPrice = Double.parseDouble(price);
+		NumberOfBedrooms = Integer.parseInt(bedrooms);
+		NumberOfBathrooms = Integer.parseInt(bathrooms);
+		Size = Double.parseDouble(size);
+		AvailabilityStart = startDate;
+		AvailabilityEnd = endDate;
+		Description = desc;
+		Renter = Integer.parseInt(renterID);
+	}
+	
 	//getter and setter functions
 	public int getID() {
 		return ID;

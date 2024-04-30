@@ -15,20 +15,16 @@ public class CreatePostServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // String username = request.getParameter("username");
-        // String password = request.getParameter("password"); // we will encrypt this for DB
-        // Double askingPrice = request.getParameter("price");
 
         PrintWriter pw = response.getWriter();
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-
+		
+		//Format input as post from json using GSON
         Post post = new Gson().fromJson(request.getReader(), Post.class);
-
-        // (Connection conn, Post post) {
-
-        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
-        int val = JDBCPost.insertSublease(conn, post);
+        
+        Connection conn = JDBCPost.connectSQL("root", "[Insert your own password]");
+        int val = JDBCPost.insertSublease(conn, post); //Add listing, return -1 if fail otherwise return postId
         
         Gson gson = new Gson();
 		
@@ -46,21 +42,5 @@ public class CreatePostServlet extends HttpServlet {
 			pw.flush();
 		}
 
-        // // Dummy validation. Replace with actual database check.
-        // boolean isValidUser = "admin".equals(username) && "admin123".equals(password);
-
-        // if (isValidUser) {
-        //     HttpSession session = request.getSession();
-        //     session.setAttribute("user", username);
-        //     // session expiration time in seconds (e.g., 30 minutes)
-        //     session.setMaxInactiveInterval(30 * 60); 
-
-            // Redirect to the profile page
-        //     response.sendRedirect("browse.html"); // Replace with your profile page URL
-        // } else {
-        //     // Send back to the login page with an error message
-        //     request.setAttribute("errorMessage", "Invalid username or password");
-        //     request.getRequestDispatcher("home.html").forward(request, response);
-        // }
     }
 }

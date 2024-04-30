@@ -49,7 +49,7 @@ public class JDBCPost {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			// INSERT YOUR DB NAME HERE INSTEAD OF "finalproject", WHICH IS MINE
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/finalproject?user=" + user + "&password=" + pw);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/sys?user=" + user + "&password=" + pw);
 		}
 		catch(Exception e) {
 			System.out.println("connection to SQL credentials invalid, " + e.getMessage());
@@ -267,7 +267,7 @@ public static int insertSublease(Connection conn, Post post) {
 		return userID;
 	}
 //	//		Get RENTER info from SYSTEM to display on profile or on POST
-	public Renter getRenter(Connection conn, String username) {
+	public static Renter getRenter(Connection conn, String username) {
 		Renter r = null;
 		Statement st = null;
 		PreparedStatement ps = null;
@@ -305,6 +305,39 @@ public static int insertSublease(Connection conn, Post post) {
 
 		return r;	
 	}
+	
+	//Return the Renter's ID given a username (not necessary now that we are getting it from local storage)
+	public static int getRenterId(Connection conn, String username) {
+		int id = 0;
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			st = conn.createStatement();
+			ps = conn.prepareStatement("SELECT ID FROM Login WHERE Renters.Username = " + username + ");");
+			rs = ps.executeQuery();
+
+			if(!rs.next()) {
+				System.out.println("No such renter");
+			}
+			else {
+				id = rs.getInt("ID");
+			}
+		} catch (SQLException e) {
+			System.out.println("Renters failed to retrieve ID from table");
+		} finally {
+			try {
+				if(st != null) st.close();
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+		return id;
+	}
+	
 
 //	// TODO: SUBLETTER JDBC CODE
 //	//
@@ -505,8 +538,6 @@ public static int insertSublease(Connection conn, Post post) {
 	    }
 	    return loginIDuserID;
 	}
-	
-	
 	
 	// Retrieves a User from the database given the user's ID
 	public User getUser(Connection conn, int userID) {
