@@ -1,6 +1,11 @@
 document.getElementById("submit-button").addEventListener('click', function() {
 	event.preventDefault();
 
+    if (localStorage.getItem("username") == null || localStorage.getItem("profileType") == "1") {
+		alert("You must be a Renter to create a Post.");
+		return;    	
+    }
+
 	const renter = localStorage.getItem("userID");
 	//let renter = getRenterId(username);
 	

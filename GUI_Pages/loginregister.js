@@ -168,3 +168,29 @@ function logout() {
 	localStorage.removeItem("userID");
 	window.location.href = "home.html";
 }
+
+function loggedInFunctionality() {
+	
+	if (localStorage.getItem("username") != null) {
+    	document.getElementById("loggedInAs").innerHTML = "You are logged in as " + localStorage.getItem("username");
+    	document.getElementById("button").innerHTML += "Logout";
+    	document.getElementById("button").addEventListener("click", function (e) {
+    		logout();
+    	})
+    }
+    
+    else {
+    	document.getElementById("loggedInAs").innerHTML = "";
+    	document.getElementById("button").innerHTML += "Login";
+    	document.getElementById("button").addEventListener("click", function (e) {
+    		window.location.href = 'home.html';
+    	})
+    	document.getElementById("profile").innerHTML = "";
+    	document.getElementById("messages").innerHTML = "";
+    }
+	
+   	
+	if (localStorage.getItem("profileType") == "2") {
+		document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" href=\"CreatePost.html\">Create Post</a></li>";
+    }
+}

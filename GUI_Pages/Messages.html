@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src = "loginregister.js"></script>
     <style>
     	#diff-users {
     		width: 20%;
@@ -90,19 +91,19 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id = "navbar_ul">
                     <li class="nav-item">
                         <a class="nav-link" href="browse.html">Browse</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">Profile</a>
+                        <a class="nav-link" href="profile.html" id = "profile">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="Messages.html">Messages</a>
+                        <a class="nav-link" href="Messages.html" id = "messages">Messages</a>
                     </li>
                 </ul>
-                <p id="loggedInAs">You are logged in as</p>
-                <button onclick="location.href='logout.html'" class="btn" type="button">Logout</button>
+                <p id="loggedInAs"></p>
+                <button class="btn" type="button" id = "button"></button>
             </div>
         </div>
     </nav>
@@ -126,7 +127,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- <script src="websocket.js"></script> -->
 	<script>
-			document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
+			loggedInFunctionality();
+			
 			var socket;
 			let user = localStorage.getItem("username");
 			function connectToServer() {
@@ -135,7 +137,14 @@
 				socket.onopen = function(event) {
 					//allow message to open as indication of start?
 					//user name
-					document.getElementById("mychat").innerHTML += "Connected!<br />";
+					if (localStorage.getItem("username") == null) {
+						document.getElementById("mychat").innerHTML += "You must be logged in to send a message.<br />"
+						return;
+					}
+					
+					else {
+						document.getElementById("mychat").innerHTML += "Connected!<br />";	
+					}
 				}
 				socket.onmessage = function(event) {
 					document.getElementById("mychat").innerHTML += event.data + "<br />";
@@ -147,19 +156,30 @@
 			function sendMessage() {
 				//let firstName = localstorage.getItem("firstName");
 				//let lastName = localstorage.getItem("lastName");
-				let user = localStorage.getItem("username");
-				socket.send(user + ": " + document.chatform.message.value);
-				return false;
+				
+				if (localStorage.getItem("username") == null) {
+					return false;
+				}
+				
+				else {
+					let user = localStorage.getItem("username");
+					socket.send(user + ": " + document.chatform.message.value);
+					return false;
+				}
 			}
 			function closeChat() {
-			    socket.close();
-			    document.getElementById("mychat").innerHTML += "Chat Closed!<br />";
+				
+				if (localStorage.getItem("username") != null) {
+				    socket.close();
+				    document.getElementById("mychat").innerHTML += "Chat Closed!<br />";
+				}
+				
+				else {
+					
+					return false;
+				}
 			}
 		</script>
-
-	<script>
-		document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
-	</script>
 
 </body>
 </html> 

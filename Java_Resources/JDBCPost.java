@@ -499,19 +499,24 @@ public static int insertSublease(Connection conn, Post post) {
 	        if (rs.next()) {
 	            if (rs.getString(2).equals(user.getPasswordHash())) {
 	            	loginIDuserID[0] = rs.getInt(1);
+	            	int userType = rs.getInt(3);
 	            	
-	            	ps = conn.prepareStatement("SELECT ID FROM ? WHERE Username = ?");
+	            	if(userType == 1) {
+	            		ps = conn.prepareStatement("SELECT ID FROM Subletters WHERE Username = ?");
+	            	}
 	            	
-	            	String table = (rs.getInt(3) == 1 ? "Subletters" : "Renters");
-	            		
-	            	ps.setString(1, table);
-	            	ps.setString(2, user.getUsername());
+	            	else {
+	            		ps = conn.prepareStatement("SELECT ID FROM Renters WHERE Username = ?");	
+	            	}
+	            	
+	            	ps.setString(1, user.getUsername());
 	            	
 
 	            	rs = ps.executeQuery();
 	            	rs.next();
+	            	
 	            	loginIDuserID[1] = rs.getInt(1);	
-	            	loginIDuserID[2] = rs.getInt(3);
+	            	loginIDuserID[2] = userType;
 	            	rs.close();
 	            	//ps.close()
 	            }
