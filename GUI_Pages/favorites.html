@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites Page - USC Subletting Web Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet"> 
+    <script src = "loginregister.js"></script>
+	<style>
+		#header {
+			padding-top: 5%;
+			text-align: center;
+		}
+		#compare {
+		    width: 85%;
+		    margin: 0;
+		    margin-left: 7.5%; 
+		    text-align: left;
+		}
+		#table-container {
+            width: 85%;
+            margin: 0 auto;
+        }
+        table, th, td {
+		    border: 1px solid black;
+		    padding: 8px;
+		}
+		button {
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg ">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="browse.html">USC Subletting</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id = "navbar_ul">
+                    <li class="nav-item">
+                        <a class="nav-link" href="browse.html" id = "browse">Browse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html" id = "profile">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Messages.html" id = "messages">Messages</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link active" href="favorites.html" id = "favorites-page">Favorites</a>
+                    </li>
+                </ul>
+                <p id = "loggedInAs"></p>
+                <button class="btn" type="button" id = "button"></button>
+            </div>
+        </div>
+    </nav>
+    
+    <h2 id="header">Favorites Page</h2>
+    <h4 id="compare">Compare your fave listings!</h4>
+	<div id="table-container">
+	</div>
+    <script>
+		loggedInFunctionality();
+		if (localStorage.getItem("username") == null) {
+			alert("You must log in to have a favorites page.");
+		}
+		var posts;
+		const data = {
+			Renter: localStorage.getItem("userID"),
+		}
+		 fetch('GetFavoritesServlet', {
+		    method: 'POST',
+		    headers: {
+		        'Content-Type': 'application/json'
+		    },
+		    body: JSON.stringify(data),
+		})
+		.then(response => {
+		    if (response.ok) {
+		        return response.json(); // Assuming response contains JSON data
+		    } else {
+		        throw new Error('Network response was not ok.');
+		    }
+		})
+		.then(data => {
+		    if (data.length > 0) {		    	
+		        let table = document.createElement('table');
+		        table.border = '1';
+
+		        // Create the table header row
+		        let headerRow = table.insertRow();
+		        let headers = ['Title', 'Property Type', 'Address', 'Monthly Price', 'Bedrooms', 'Bathrooms', 'Size', 'Start', 'End', 'Description', 'Delete'];
+		        headers.forEach(headerText => {
+		            let headerCell = document.createElement('th');
+		            headerCell.textContent = headerText;
+		            headerRow.appendChild(headerCell);
+		        });
+
+		        data.forEach(post => {
+		            let row = table.insertRow();
+		            console.log(post); 
+		            let jsonString = JSON.stringify(post);
+		            let jsonData = JSON.parse(jsonString);
+
+		           let i = 0;
+		         	while (jsonData.length > 0 && i < jsonData.length) {
+		             let post = jsonData[i]; // gets each object in array
+
+		             let row = table.insertRow();
+
+		            /*  let cell1 = row.insertCell();
+		             cell1.textContent = post.ID;  */
+
+		             let cell2 = row.insertCell();
+		             cell2.textContent = post.Title; 
+
+		             let cell3 = row.insertCell();
+		             cell3.textContent = post.PropertyType; 
+
+		             let cell4 = row.insertCell();
+		             cell4.textContent = post.Address;
+
+		             let cell5 = row.insertCell();
+		             cell5.textContent = post.MonthlyPrice;
+
+		             let cell6 = row.insertCell();
+		             cell6.textContent = post.NumberOfBedrooms; 
+
+		             let cell7 = row.insertCell();
+		             cell7.textContent = post.NumberOfBathrooms; 
+
+		             let cell8 = row.insertCell();
+		             cell8.textContent = post.Size;
+
+		             let cell9 = row.insertCell();
+		             cell9.textContent = post.AvailabilityStart;
+
+		             let cell10 = row.insertCell();
+		             cell10.textContent = post.AvailabilityEnd;
+
+		             let cell11 = row.insertCell();
+		             cell11.textContent = post.Description;
+
+		             let cell12 = row.insertCell();
+		             let deleteButton = document.createElement('button');
+		             deleteButton.textContent = 'X';
+		             deleteButton.addEventListener('click', () => {
+		                 deleteFavorite(post.ID); // Assuming ID is the property that holds the favorite's ID
+		             });
+		             cell12.appendChild(deleteButton);
+		             i++
+		         } 
+ 			      });
+				
+		        document.getElementById("table-container").appendChild(table);
+		    }
+		})
+		.catch(error => {
+		    console.error('Error:', error);
+		    alert('Error fetching favorites!');
+		});
+		
+		
+		function deleteFavorite(favoriteID) {
+		    // Send a request to your server to delete the favorite with the given ID
+		    const data = {
+		    	ID: parseInt(favoriteID),
+		    	Renter: parseInt(localStorage.getItem("userID")),
+		    }
+		    console.log(data.ID);
+		    console.log(data.Renter);
+		    fetch('DeleteFavoriteServlet', {
+		        method: 'POST',
+		        headers: {
+		            'Content-Type': 'application/json'
+		        },
+		        body: JSON.stringify(data), // Assuming your backend expects FavoriteID
+		    })
+		    .then(response => {
+		        if (response.ok) {
+		            // Optionally, you can remove the row from the table if deletion is successful
+		            // Get the row element and remove it
+		            let row = document.getElementById('row_' + favoriteID); // Assuming you set an ID for each row
+		            if (row) {
+		                row.remove();
+		            }
+		            window.location.reload();
+		            alert('Favorite deleted successfully.');
+		        } else {
+		            alert("Failed to remove listing from Favorites table!");
+		        }
+		    })
+		    .catch(error => {
+		        console.error('Error:', error);
+		        alert('Error deleting favorite!');
+		    });
+		}
+    </script>
+</body>
+</html>
