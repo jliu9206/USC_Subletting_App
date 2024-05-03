@@ -767,4 +767,88 @@ public static int insertSublease(Connection conn, Post post) {
 	    }
 	    return success;
 	}
+	
+	public static ArrayList<Post> getAllFavorites(Connection conn, int subletID) {
+	    ArrayList<Post> posts = new ArrayList<>();
+	    System.out.println("sublet ID: " + subletID);
+	    try {
+	        // Get all the PostIDs from the FavoriteProperties table for the given subletID
+	        PreparedStatement getPostIDs = conn.prepareStatement("SELECT PostID FROM FavoriteProperties WHERE SubletID = ?");
+	        getPostIDs.setInt(1, subletID);
+	        ResultSet rs = getPostIDs.executeQuery();
+	        System.out.println("GOT HERE");
+	        // Iterate through the result set and fetch posts from the Post table
+	        while (rs.next()) {
+	        	System.out.println("GOT posts");
+	            int postID = rs.getInt("PostID");
+	            PreparedStatement getPost = conn.prepareStatement("SELECT * FROM Post WHERE ID = ?");
+	            getPost.setInt(1, postID);
+	            ResultSet postRS = getPost.executeQuery();
+	           
+	            // Assuming Post class has appropriate constructor and methods to create Post objects
+	            if (postRS.next()) {
+	                Post post = new Post(postRS.getInt("ID"), postRS.getString("Title"), postRS.getInt("PropertyType"),
+	                			postRS.getString("Address"), postRS.getDouble("MonthlyPrice"), postRS.getInt("NumberOfBedrooms"),
+	                			postRS.getInt("NumberOfBathrooms"), postRS.getDouble("Size"), postRS.getString("AvailabilityStart"),
+	                			postRS.getString("AvailabilityEnd"), postRS.getString("Description"), postRS.getInt("Renter"));
+	                System.out.println(post.getID());
+	                posts.add(post);
+	            }
+
+	            postRS.close();
+	        }
+
+	        rs.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return posts;
+	}
+	
+	public static int removeFavorite(Connection conn, int postID, int subletID) {
+	    int success = 0;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	    System.out.println("Attempting to remove favorite with postID: " + postID + " and subletID: " + subletID);
+	    try {
+	        // Check if the favorite exists in the FavoriteProperties table
+	        PreparedStatement checkFavorite = conn.prepareStatement(
+	                "SELECT * FROM FavoriteProperties WHERE PostID = ? AND SubletID = ?");
+	        checkFavorite.setInt(1, postID);
+	        checkFavorite.setInt(2, subletID);
+	        ResultSet favoriteResult = checkFavorite.executeQuery();
+	        
+	        // Favorite exists, proceed with removal
+	        if (favoriteResult.next()) {
+	            ps = conn.prepareStatement("DELETE FROM FavoriteProperties WHERE PostID = ? AND SubletID = ?");
+	            ps.setInt(1, postID);
+	            ps.setInt(2, subletID);
+	            int rowsAffected = ps.executeUpdate();
+	            
+	            if (rowsAffected > 0) {
+	                success = 1; // Favorite removed successfully
+	                System.out.println("Favorite removed from FavoriteProperties table.");
+	            } else {
+	                success = -1; // Failed to remove favorite
+	                System.out.println("Failed to remove favorite from FavoriteProperties table.");
+	            }
+	        } else {
+	            success = -2; // Favorite does not exist
+	            System.out.println("Favorite does not exist in FavoriteProperties table.");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        success = -1; // Error occurred
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (ps != null) ps.close();
+	        } catch (SQLException sqle) {
+	            System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+	        }
+	    }
+	    return success;
+	}
+
 }
