@@ -70,23 +70,14 @@ CREATE TABLE Post (
 	FOREIGN KEY (Renter) REFERENCES Renters(ID)
 );
 
-CREATE TABLE ReviewDirection (
-    DirectionID INT AUTO_INCREMENT PRIMARY KEY,
-    DirectionName VARCHAR(50)
-);
-
-INSERT INTO ReviewDirection (DirectionName) VALUES ('RenterToSubletter'), ('SubletterToRenter');
 
 CREATE TABLE Ratings (
     ID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(256),
     NumberOfStars INT,
     Comments TEXT,
-    RenterID INT,
-    SubletID INT,
-    ReviewDirectionID INT,
-    FOREIGN KEY (RenterID) REFERENCES Renters(ID),
-    FOREIGN KEY (SubletID) REFERENCES Subletters(ID),
-    FOREIGN KEY (ReviewDirectionID) REFERENCES ReviewDirection(DirectionID)
+	PostID INT,
+    FOREIGN KEY (PostID) REFERENCES Post(ID)
 );
 
 CREATE TABLE FavoriteProperties (
