@@ -31,85 +31,105 @@
     		display: flex;
     		justify-content: center;
     	}
-	.message-chat {
-	      border-radius: 5px;
-	      padding: 10px;
-	      background-color: #f9f9f9;
-	      width: 60%;
-	}
-	.container {
-	      display: flex;
-	      justify-content: center;
-	      align-items: center;
-	      margin-top: 10%;
-	      width: 80%;
-	}
-        #name {
-		margin-top: 10px; 
-		margin-left: 80%;
-	}
-	#message {
-		margin-top: 10px; 
-		margin-left: 80%;
-		border-radius: 5px;
-		border: 2px solid black;
-		display: none;
-	}
-	.message-bubble {
-	    max-width: 80%;
-	    margin-bottom: 10px;
-	    clear: both;
-	    overflow: hidden;
-	    padding: 10px;
-	    border-radius: 10px;
-	}
-	.user-bubble {
-	    background-color: #007bff;
-	    color: #fff;
-	    float: right;
-	}
-	.incoming-bubble {
-	    background-color: rgb(223, 223, 225); 
-	    color: #000;
-	    float: left;
-	}
-	#message-box {
-	    margin-top: 10px;
-	    overflow-y: auto;
-	    max-height: 300px;
-	    padding: 10px;
-	    margin-left: 20%;
-	}
-	#message-input {
-	    display: flex;
-	    justify-content: center;
-	    align-items: center;
-	    margin-top: 20px;
-	}
-	.rounded-input {
-	    border-radius: 20px;
-	    border: 1px solid #ccc;
-	    padding: 10px;
-	    flex-grow: 1;
-	    margin-right: 10px;
-	}
-	#send-button {
-	    background-color: #007bff;
-	    color: #fff;
-	    border: none;
-	    padding: 10px;
-	    border-radius: 20px;
-	    cursor: pointer;
-	    display: flex;
-	    align-items: center;
-	}
-	#send-button img {
-	    width: 20px;
-	    margin-right: 5px;
-	}
-	#chat-closed {
-	    text-align: center;
-	}
+		.message-chat {
+		      border-radius: 5px;
+		      padding: 10px;
+		      background-color: #f9f9f9;
+		      width: 60%;
+		}
+		.container {
+		      display: flex;
+		      justify-content: center;
+		      align-items: center;
+		      margin-top: 10%;
+		      width: 80%;
+		}
+	        #name {
+			margin-top: 10px; 
+			margin-left: 80%;
+		}
+		#message {
+			margin-top: 10px; 
+			margin-left: 80%;
+			border-radius: 5px;
+			border: 2px solid black;
+			display: none;
+		}
+		.message-bubble {
+		    max-width: 80%;
+		    margin-bottom: 10px;
+		    clear: both;
+		    overflow: hidden;
+		    padding: 10px;
+		    border-radius: 10px;
+		}
+		.user-bubble {
+		    background-color: #007bff;
+		    color: #fff;
+		    float: right;
+		}
+		
+		.incoming-bubble {
+		    background-color: rgb(223, 223, 225); 
+		    color: #000;
+		    float: left;position: relative; /* Add this line */
+		}
+
+		.incoming-bubble:after {
+    content: '';
+    position: absolute;
+    right: -20px; /* Adjust position to place the triangle */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 15px; /* Adjust border width to change triangle size */
+    border-color: transparent transparent transparent rgb(223, 223, 225); /* Use the same color as the bubble background */
+}
+
+		#message-box {
+		    margin-top: 10px;
+		    overflow-y: auto;
+		    max-height: 300px;
+		    padding: 10px;
+		    margin-left: 20%;
+		}
+		#message-input {
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    margin-top: 20px;
+		}
+		.message-container {
+    		clear: both; /* Clear float */
+		}
+		
+		.rounded-input {
+		    border-radius: 20px;
+		    border: 1px solid #ccc;
+		    padding: 10px;
+		    flex-grow: 1;
+		    margin-right: 10px;
+		}
+		#send-button {
+		    background-color: #007bff;
+		    color: #fff;
+		    border: none;
+		    padding: 10px;
+		    border-radius: 20px;
+		    cursor: pointer;
+		    display: flex;
+		    align-items: center;
+		}
+		#send-button img {
+		    width: 20px;
+		    margin-right: 5px;
+		}
+		#chat-closed {
+		    text-align: center;
+		}
+	
     </style>
 </head>
 <body onload="connectToServer()">
@@ -166,48 +186,63 @@
 			let user = localStorage.getItem("username");
 			function connectToServer() {
 				//change path based on your project name
-				socket = new WebSocket("ws://localhost:8080/FinalProject/ws");
+				socket = new WebSocket("ws://localhost:8080/Project/ws");
 				socket.onopen = function(event) {
 					let address = localStorage.getItem("address");
 					document.getElementById("mychat").innerHTML += "Chatting about " + address + "!<br />";
 				}
-				/*socket.onmessage = function(event) {
-					/* document.getElementById("message").innerHTML += event.data + "<br />";
-					document.getElementById("message").innerHTML += event.data + "<br />"; */
-					/*let data = event.data.split(":"); // Assuming the data format is "username: message"
-
-				    let username = data[0];
-				    let messageContent = data.slice(1).join(":"); // Join the remaining parts as the message content
-
-				    document.getElementById("name").innerHTML += username + "<br />";
-				    document.getElementById("message").innerHTML += messageContent + "<br />";
-				}
-				socket.onclose = function(event) {
-					document.getElementById("message").innerHTML += "Disconnected!<br />";
-				} */
+				
 				socket.onmessage = function(event) {
 				    let data = event.data.split(":");
 				    let username = data[0];
 				    let messageContent = data.slice(1).join(":");
 
-				    // create message bubble with username and content
+				    // Create container for the message
+				    let messageContainer = document.createElement("div");
+				    messageContainer.className = "message-container";
+
+				    // Create element for username
+				    let usernameElement = document.createElement("div");
+				    usernameElement.className = "username";
+				    usernameElement.innerHTML = "<strong>" + username + "</strong>";
+
+				    // Determine if it's a user message or incoming message
+				    if (username === localStorage.getItem("username")) {
+				        // If it's a user message, align the username to the left
+				        usernameElement.style.textAlign = "right";
+				    } else {
+				        // If it's an incoming message, align the username to the right
+				        usernameElement.style.textAlign = "left";
+				    }
+
+				    // Append username to the message container
+				    messageContainer.appendChild(usernameElement);
+
+				    // Create message bubble with message content
 				    let messageBubble = document.createElement("div");
 				    messageBubble.className = "message-bubble";
-				    messageBubble.innerHTML = "<strong>" + username + "</strong>: " + messageContent;
+				    messageBubble.innerHTML = messageContent;
 
-				    // determine if it's a user message or incoming message
+				    // Determine if it's a user message or incoming message
 				    if (username === localStorage.getItem("username")) {
+				        // If it's a user message, float the message bubble to the left
 				        messageBubble.classList.add("user-bubble");
 				    } else {
+				        // If it's an incoming message, float the message bubble to the right
 				        messageBubble.classList.add("incoming-bubble");
 				    }
 
-				    //append message bubble to the message box
-				    document.getElementById("message-box").appendChild(messageBubble);
+				    // Append message bubble to the message container
+				    messageContainer.appendChild(messageBubble);
 
-				    //scroll to the bottom of the message box
+				    // Append the message container to the message box
+				    document.getElementById("message-box").appendChild(messageContainer);
+
+				    // Scroll to the bottom of the message box
 				    document.getElementById("message-box").scrollTop = document.getElementById("message-box").scrollHeight;
 				};
+
+
 
 			}
 			function sendMessage() {
