@@ -32,6 +32,13 @@
 		button {
 			text-align: center;
 		}
+		a {
+			color: black;
+		}
+		.delete-button {
+		    display: block;
+		    margin: 0 auto;
+		}
 	</style>
 </head>
 <body>
@@ -85,7 +92,7 @@
 		})
 		.then(response => {
 		    if (response.ok) {
-		        return response.json(); // Assuming response contains JSON data
+		        return response.json(); 
 		    } else {
 		        throw new Error('Network response was not ok.');
 		    }
@@ -95,7 +102,6 @@
 		        let table = document.createElement('table');
 		        table.border = '1';
 
-		        // Create the table header row
 		        let headerRow = table.insertRow();
 		        let headers = ['Title', 'Property Type', 'Address', 'Monthly Price', 'Bedrooms', 'Bathrooms', 'Size', 'Start', 'End', 'Description', 'Delete'];
 		        headers.forEach(headerText => {
@@ -116,11 +122,13 @@
 
 		             let row = table.insertRow();
 
-		            /*  let cell1 = row.insertCell();
-		             cell1.textContent = post.ID;  */
+		         	// static creation of table based on each column
 
 		             let cell2 = row.insertCell();
-		             cell2.textContent = post.Title; 
+		             let titleLink = document.createElement('a');
+		             titleLink.href = `DetailedPost.html?id=${post.ID}`;
+		             titleLink.textContent = post.Title;
+		             cell2.appendChild(titleLink);
 
 		             let cell3 = row.insertCell();
 		             cell3.textContent = post.PropertyType; 
@@ -151,9 +159,10 @@
 
 		             let cell12 = row.insertCell();
 		             let deleteButton = document.createElement('button');
+		             deleteButton.classList.add('delete-button');
 		             deleteButton.textContent = 'X';
 		             deleteButton.addEventListener('click', () => {
-		                 deleteFavorite(post.ID); // Assuming ID is the property that holds the favorite's ID
+		                 deleteFavorite(post.ID); 
 		             });
 		             cell12.appendChild(deleteButton);
 		             i++
@@ -170,7 +179,6 @@
 		
 		
 		function deleteFavorite(favoriteID) {
-		    // Send a request to your server to delete the favorite with the given ID
 		    const data = {
 		    	ID: parseInt(favoriteID),
 		    	Renter: parseInt(localStorage.getItem("userID")),
@@ -182,14 +190,13 @@
 		        headers: {
 		            'Content-Type': 'application/json'
 		        },
-		        body: JSON.stringify(data), // Assuming your backend expects FavoriteID
+		        body: JSON.stringify(data), 
 		    })
 		    .then(response => {
 		        if (response.ok) {
-		            // Optionally, you can remove the row from the table if deletion is successful
-		            // Get the row element and remove it
-		            let row = document.getElementById('row_' + favoriteID); // Assuming you set an ID for each row
+		            let row = document.getElementById('row_' + favoriteID);
 		            if (row) {
+		            	//deletes row when X is clicked
 		                row.remove();
 		            }
 		            window.location.reload();
