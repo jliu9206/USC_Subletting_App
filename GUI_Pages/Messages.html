@@ -48,6 +48,7 @@
 			margin-top: 10px; 
 			margin-left: 80%;
 		}
+		
 		#message {
 			margin-top: 10px; 
 			margin-left: 80%;
@@ -55,39 +56,60 @@
 			border: 2px solid black;
 			display: none;
 		}
+		
 		.message-bubble {
 		    max-width: 80%;
 		    margin-bottom: 10px;
 		    clear: both;
-		    overflow: hidden;
+		    /* overflow: hidden; */
 		    padding: 10px;
 		    border-radius: 10px;
+		    position: relative; /* Ensure positioning context for pseudo-element */
 		}
+
 		.user-bubble {
 		    background-color: #007bff;
 		    color: #fff;
 		    float: right;
 		}
-		
+	
+		.user-bubble::after {
+		    content: '';
+			position: absolute;
+			right: 0;
+			top: 50%;
+			width: 0;
+			height: 0;
+			border: 10px solid transparent;
+			border-left-color: #007bff;
+			border-right: 0;
+			border-bottom: 0;
+			margin-top: 5px;			
+			margin-right: -10px;
+		}
+	
 		.incoming-bubble {
 		    background-color: rgb(223, 223, 225); 
 		    color: #000;
-		    float: left;position: relative; /* Add this line */
+		    float: left;
 		}
-
-		.incoming-bubble:after {
-    content: '';
-    position: absolute;
-    right: -20px; /* Adjust position to place the triangle */
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 10px 0 10px 15px; /* Adjust border width to change triangle size */
-    border-color: transparent transparent transparent rgb(223, 223, 225); /* Use the same color as the bubble background */
-}
-
+		
+		.incoming-bubble::after {
+		    content: '';
+			position: absolute;
+			left: 0;
+			top: 50%;
+			width: 0;
+			height: 0;
+			border: 10px solid transparent;
+			border-left-color: rgb(223, 223, 225);
+			border-right: 0;
+			border-bottom: 0;
+/* 			margin-top: 5px;			
+ */			margin-left: -10px;
+			transform: rotateY(180deg);
+		}
+	
 		#message-box {
 		    margin-top: 10px;
 		    overflow-y: auto;
@@ -95,12 +117,14 @@
 		    padding: 10px;
 		    margin-left: 20%;
 		}
+		
 		#message-input {
 		    display: flex;
 		    justify-content: center;
 		    align-items: center;
 		    margin-top: 20px;
 		}
+		
 		.message-container {
     		clear: both; /* Clear float */
 		}
@@ -112,6 +136,7 @@
 		    flex-grow: 1;
 		    margin-right: 10px;
 		}
+		
 		#send-button {
 		    background-color: #007bff;
 		    color: #fff;
@@ -148,10 +173,7 @@
                         <a class="nav-link" href="profile.html">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="Messages.html">Messages</a>
-                    </li>
-		    <li class="nav-item">
-                        <a class="nav-link" href="favorites.html" id = "favorites-page">Favorites</a>
+                        <a class="nav-link" href="Messages.html">Messages</a>
                     </li>
                 </ul>
                 <p id="loggedInAs">You are logged in as</p>
@@ -223,6 +245,7 @@
 
 				    // Create message bubble with message content
 				    let messageBubble = document.createElement("div");
+				    
 				    messageBubble.className = "message-bubble";
 				    messageBubble.innerHTML = messageContent;
 
@@ -244,8 +267,6 @@
 				    // Scroll to the bottom of the message box
 				    document.getElementById("message-box").scrollTop = document.getElementById("message-box").scrollHeight;
 				};
-
-
 
 			}
 			function sendMessage() {
