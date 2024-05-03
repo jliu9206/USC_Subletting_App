@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,190 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet"> 
+    <style>
+		#photo-popup {
+			display: flex;
+			justify-content: center;  
+			width: auto;
+			height: auto;  	
+    	}
+		#footer {
+			margin-bottom: 0;
+			position: absolute;
+		}
+		.photos {
+			width: 50%;
+			height: auto;
+		}
+		#contact-button {
+			display: flex;
+			justify-content: center;
+		}
+		#contact-box{
+			border: 2px solid rgb(215, 216, 216);
+			border-radius: 10px;
+			/* background: rgb(244, 245, 245); */
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			padding: 20px;
+			width: 100%;
+		}
+		 #summary-section {
+            border: 2px solid rgb(215, 216, 216);
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Four columns with equal width */
+            gap: 10px; /* Gap between columns */
+            padding: 20px;
+        }
+        .summary-item {
+            /* Additional styles for each summary item */
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg ">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="browse.html">USC Subletting</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="browse.html">Browse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Messages.html">Messages</a>
+                    </li>
+                </ul>
+                <p id="loggedInAs">You are logged in as</p>
+                <button onclick="location.href='logout.html'" class="btn" type="button">Logout</button>
+            </div>
+        </div>
+    </nav>
+	
+	<div id="photo-popup">
+    	<img src="test-img.jpeg" class="photos" alt="IMAGE" />
+    	<img src="test-img-2.jpeg" class="photos" alt="IMAGE" />
+	</div>
+    
+    <div class="container mt-4">
+        <h1 id="listing-name">Listing Title</h1>
+		 <div class="col-7">
+		        <h3 id="address" class="form-label"></h3>
+		 </div>
+        <div class="row g-3">
+            <div class="col-md-7">
+                Summary Section
+                <div id="summary-section">
+                    <div class="summary-item"><strong>Monthly Rent</strong><br><span id="rent"></span></div>
+                    <div class="summary-item"><strong>Bedrooms</strong><br><span id="num-rooms"></span></div>
+                    <div class="summary-item"><strong>Bathrooms</strong><br><span id="num-bath"></span></div>
+                    <div class="summary-item"><strong>Square Feet</strong><br><span id="size"></span></div>
+                </div>
+            </div>
+              <div class="col-md-3 mx-auto">
+                Contact This Property Section
+                <div id="contact-box">
+                    <h4>Contact This Property</h4>
+                    <button id="contact-button" type="button" class="btn btn-custom">Send Message</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-7">
+         		<h5>Availability</h5>
+		        <p id="availability"></p>
+		        <h5>Description</h5>
+		        <p id="description"></p>
+        </div>
+	</div>
+    <footer>
+        <p>© 2024 USC Subletting. All rights reserved.</p>
+    </footer>
+
+    Bootstrap JS bundle
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+   		document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
+    	var listingName = document.getElementById("listing-name");
+    	var rating = document.getElementById("rating");
+    	var address = document.getElementById("address");
+    	var desc = document.getElementById("description");
+    	var availability = document.getElementById("availability");
+    	var rent = document.getElementById("rent");
+    	var rooms = document.getElementById("num-rooms");
+    	var bath = document.getElementById("num-bath");
+    	var size = document.getElementById("size");
+
+	 	const data = {
+	/*  		localStorage.getItem("postID"); */
+	 		//REPLACE WHEN BROWSE IS WORKING
+	 		ID: localStorage.getItem("postID")
+	 	};
+	    console.log("got here");
+    	fetch('GetPostServlet', {
+    	    method: 'POST',
+    	    headers: {
+    	        'Content-Type': 'application/json'
+    	    },
+    	    body: JSON.stringify(data),
+    	})
+    	.then(response => {
+	    if (response.ok) {
+	        return response.json();
+	    } else {
+	        throw new Error('post information not found');
+	    }
+		})
+		.then(data => {
+		    listingName.innerHTML = data.Title;
+		    
+		    address.innerHTML = data.Address;
+	    	//keeping curr listing's address
+	    	localStorage.setItem("address", address.innerHTML);
+			desc.innerHTML = data.Description;
+			availability.innerHTML = data.AvailabilityStart + " to " + data.AvailabilityEnd;
+			rent.innerHTML = "$" + data.MonthlyPrice;
+			rooms.innerHTML = data.NumberOfBedrooms;
+			bath.innerHTML = data.NumberOfBathrooms;
+			size.innerHTML = data.Size;
+		})
+		.catch(error => {
+		    console.error('There was a problem with the fetch operation:', error);
+		});
+    	
+    	document.getElementById("contact-button").addEventListener('click', function() {
+    		
+     		window.location.href = 'Messages.html'; 
+    	})
+    </script>
+</body>
+</html>
+ -->
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Profile - USC Subletting Web Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="styles.css" rel="stylesheet"> 
     <script src = "loginregister.js"></script>
     <style>
@@ -41,20 +225,56 @@
 			width: 100%;
 		}
 		 #summary-section {
-           	 border: 2px solid rgb(215, 216, 216);
-            	border-radius: 10px;
-            	display: grid;
-            	grid-template-columns: repeat(4, 1fr); /* Four columns with equal width */
-            	gap: 10px; /* Gap between columns */
-            	padding: 20px;
-        	}
-	        .summary-item {
-	            /* Additional styles for each summary item */
-	            text-align: center;
-	            border: 1px solid #ccc;
-	            border-radius: 5px;
-	            padding: 10px;
-	        }
+           	border: 2px solid rgb(215, 216, 216);
+           	border-radius: 10px;
+           	display: grid;
+           	grid-template-columns: repeat(4, 1fr);
+           	gap: 10px;
+           	padding: 20px;
+        }
+	    .summary-item {
+	      	text-align: center;
+	        border: 1px solid #ccc;
+	        border-radius: 5px;
+	        padding: 10px;
+	    }
+	  /*   #favorite {
+	       	font-size: 36px;
+	        border: none;
+	       	background-color: #F6F3E7;
+	       	margin-left: 65%;
+
+	    }
+		#favorite:hover {
+		    display: "Add to Favorites";
+		} */
+		#favorite {
+		    font-size: 36px;
+		    border: none;
+		    background-color: #F6F3E7;
+		    margin-left: 65%;
+		    position: relative;
+		}
+		
+		#favorite:hover::before {
+		    content: "Add to Favorites";
+		    position: absolute;
+		    top: -18px; 
+		    left: 50%;
+		    transform: translateX(-50%);
+		    background-color: #000;
+		    color: #fff;
+		    padding: 5px 10px;
+		    border-radius: 5px;
+		    z-index: 999;
+		    font-size: 14px;
+		    opacity: 0.8;
+		    white-space: nowrap;
+		}
+	    #title {
+	    	display: flex;
+	    	justify-content: inline;
+	    }
     </style>
 </head>
 <body>
@@ -89,7 +309,10 @@
 	</div>
     
     <div class="container mt-4">
-        <h1 id="listing-name">Listing Title</h1>
+    	<div id="title">
+        	<h1 id="listing-name">Listing Title</h1>
+        	<button id="favorite"><i class="fa fa-heart-o"></i></button>
+        </div>
 		 <div class="col-7">
 		        <h3 id="address" class="form-label"></h3>
 		 </div>
@@ -137,7 +360,6 @@
     	var rooms = document.getElementById("num-rooms");
     	var bath = document.getElementById("num-bath");
     	var size = document.getElementById("size");
-
 	 const data = {
 	 	ID: localStorage.getItem("postID")
 	 };
@@ -174,6 +396,54 @@
     	document.getElementById("contact-button").addEventListener('click', function() {
      		window.location.href = 'Messages.html'; 
     	})
+    	
+    	function loggedInFunctionality() {
+			
+			if (localStorage.getItem("username") != null) {
+		    	document.getElementById("loggedInAs").innerHTML = "You are logged in as " + localStorage.getItem("username");
+		    	document.getElementById("button").innerHTML += "Logout";
+		    	document.getElementById("button").addEventListener("click", function (e) {
+		    		logout();
+		    	})
+		    }
+		    
+		    else {
+		    	document.getElementById("loggedInAs").innerHTML = "";
+		    	document.getElementById("button").innerHTML += "Login";
+		    	document.getElementById("button").addEventListener("click", function (e) {
+		    		window.location.href = 'home.html';
+		    	})
+		    	document.getElementById("profile").innerHTML = "";
+		    	document.getElementById("messages").innerHTML = "";
+		    }
+			
+		   	
+			if (localStorage.getItem("profileType") == "2") {
+				document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" href=\"CreatePost.html\">Create Post</a></li>";
+		    }
+		}
+    		//to add to favorites
+		 document.getElementById("favorite").addEventListener('click', function() {
+		    const data = {
+		        ID: parseInt(localStorage.getItem("postID")),
+		        Renter: parseInt(localStorage.getItem("userID")),
+		    };
+		    fetch('AddFavoriteServlet', {
+		        method: 'POST',
+		        headers: {
+		            'Content-Type': 'application/json'
+		        },
+		        body: JSON.stringify(data),
+		    })
+		    .then(response =>  {
+		        if (response.ok) {
+		            alert("Added listing to favorites!");
+		        } else {
+		            alert("Unsuccessful in favoriting post.");
+		        }
+		    })
+		});
+		    	
     </script>
 </body>
 </html>

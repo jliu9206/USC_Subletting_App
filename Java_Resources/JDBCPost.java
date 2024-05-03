@@ -713,4 +713,58 @@ public static int insertSublease(Connection conn, Post post) {
 	    }
 		return posts;
 	}	
+	
+	public static int addFavorite(Connection conn, int postID, int subletID) {
+	    int success = 0;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	    System.out.println("made connection HERE. " + postID);
+	    try {
+	        // check if the PostID exists in the Post table
+	        PreparedStatement checkPost = conn.prepareStatement("SELECT ID FROM Post WHERE ID = ?");
+	        checkPost.setInt(1, postID);
+	        ResultSet postResult = checkPost.executeQuery();
+	        if (!postResult.next()) {
+	            // PostID does not exist in the post table
+	            return -2; 
+	        }
+	        
+	        PreparedStatement checkFavorite = conn.prepareStatement(
+	                "SELECT * FROM FavoriteProperties WHERE PostID = ? AND SubletID = ?");
+	            checkFavorite.setInt(1, postID);
+	            checkFavorite.setInt(2, subletID);
+	            ResultSet favoriteResult = checkFavorite.executeQuery();
+	            
+	            //user already added to favorite
+	            if (favoriteResult.next()) {
+	                return -3; 
+	            }
+	        
+	        // insert into FavoriteProperties table
+	        
+	        ps = conn.prepareStatement("INSERT INTO FavoriteProperties (PostID, SubletID) VALUES (?, ?)");
+	        ps.setInt(1, postID);
+	        ps.setInt(2, subletID);
+	        int rowsAffected = ps.executeUpdate();
+	        
+	        if (rowsAffected > 0) {
+	            success = 1; 
+	            System.out.println("Record added to FavoriteProperties table.");
+	        } else {
+	            success = -1;
+	            System.out.println("Failed to add record to FavoriteProperties table.");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        success = -1; 
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (ps != null) ps.close();
+	        } catch (SQLException sqle) {
+	            System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+	        }
+	    }
+	    return success;
+	}
 }
