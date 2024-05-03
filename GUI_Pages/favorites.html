@@ -131,8 +131,18 @@
 		             cell2.appendChild(titleLink);
 
 		             let cell3 = row.insertCell();
-		             cell3.textContent = post.PropertyType; 
-
+		             if (post.PropertyType == 1)
+		             {
+		            	 cell3.textContent = "Apartment";
+		           	 }
+		             else if (post.PropertyType == 2)
+					 {
+		            	 cell3.textContent = "House";
+					 }
+		             else 
+		             {
+		            	 cell3.textContent = "Room";
+		             }
 		             let cell4 = row.insertCell();
 		             cell4.textContent = post.Address;
 
