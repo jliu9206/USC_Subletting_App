@@ -46,6 +46,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Messages.html" id = "messages">Messages</a>
                     </li>
+		    		<li class="nav-item">
+                        <a class="nav-link" href="favorites.html" id = "favorites-page">Favorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Delete.html" id="edit">Edit Listings</a>
+                    </li>
                 </ul>
                 <p id = "loggedInAs"></p>
                 <button class="btn" type="button" id = "button"></button>
@@ -53,6 +59,18 @@
         </div>
     
     </nav>
+    
+    <script>		
+		var editListings = document.getElementById('edit');
+
+		let isRenter = localStorage.getItem("profileType"); 
+
+		if (isRenter == 2) {
+			editListings.style.display = 'block'; 
+		} else {
+			editListings.style.display = 'none';
+		}	
+    </script>
 
 <!-- Search Form -->
 <div class="container mt-4">
