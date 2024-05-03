@@ -422,8 +422,7 @@
 				document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" href=\"CreatePost.html\">Create Post</a></li>";
 		    }
 		}
-    	
-    	//to add to favorites
+    		//to add to favorites
 		 document.getElementById("favorite").addEventListener('click', function() {
 		    const data = {
 		        ID: parseInt(localStorage.getItem("postID")),
@@ -440,18 +439,11 @@
 		        if (response.ok) {
 		            alert("Added listing to favorites!");
 		        } else {
-		            return response.json;
+		            alert("Unsuccessful in favoriting post.");
 		        }
 		    })
-		   //error message not properly displaying
-		    .then (data => {
-		    	if (data === "Already favorited!" || data === "Failed to favorite listing")
-		    	{
-		    		alert(data);
-		    	}
-		    })
 		});
-    	
+		    	
     </script>
 </body>
 </html>
