@@ -27,6 +27,7 @@ public class GetFavoritesServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 
+			//just using post to get the info from the front end, disregard the getRenter, it's passing subletter's ID
 			Post post = new Gson().fromJson(request.getReader(), Post.class);
 			
 	        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
@@ -34,13 +35,7 @@ public class GetFavoritesServlet extends HttpServlet {
 			int subletID = post.getRenter();
 
 			ArrayList<Post> postReturn = JDBCPost.getAllFavorites(conn, subletID);
-	        
-			System.out.println("Size of postReturn: " + postReturn.size());
 
-			for (int i = 0; i < postReturn.size(); i++) {
-			    Post currentPost = postReturn.get(i);
-			    System.out.println("Post Tile: " + i + ": " + currentPost.getTitle());
-			}
 	        Gson gson = new Gson();
 	        
 	    	JsonArray jsonArray = new JsonArray();
