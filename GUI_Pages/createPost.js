@@ -1,10 +1,35 @@
+//CITE PREVIEW SECTION: https://codepen.io/matt-west/pen/DEQzqv
+let photos = []
+let previews = []
+for(let i = 0; i < 3; i++){
+	photos[i] = document.getElementById("photoUpload" + (i+1));
+	previews[i] = document.getElementById("previewPhoto" + (i+1));
+	
+	photos[i].addEventListener('change', function(e){
+		var file = photos[i].files[0];
+
+		if (file.type.match(/image.*/)) {
+			var reader = new FileReader();
+    
+			reader.onload = function(e) {
+				previews[i].innerHTML = "";
+
+				var img = new Image();
+				img.src = reader.result;
+
+				previews[i].appendChild(img);
+			}				
+    
+    	reader.readAsDataURL(file);	
+		} else {
+			previews[i].innerHTML = "File not supported! Expected Image"
+		}
+	});
+}
+//END CITATION
+
 document.getElementById("submit-button").addEventListener('click', function() {
 	event.preventDefault();
-
-    if (localStorage.getItem("username") == null || localStorage.getItem("profileType") == "1") {
-		alert("You must be a Renter to create a Post.");
-		return;    	
-    }
 
 	const renter = localStorage.getItem("userID");
 	//let renter = getRenterId(username);
@@ -19,28 +44,30 @@ document.getElementById("submit-button").addEventListener('click', function() {
     const endDate = document.getElementById("endDate").value;
     const size = document.getElementById("size").value;
     const description = document.getElementById("description").value;
-    //check that all fields are filled
+
+    //For every picture the renter uploads, add the picture (at index files[0]) to images[]    
+    const imageData = new FormData();
+    for(let i = 0; i < photos.length; i++){
+		if(!(photos[i].value.length === 0)){
+			imageData.append("images[]", photos[i].files[0]);
+		}
+	}
+	//WE ALSO HAVE TO include the post's ID in the FormData object
+	//imageData.append("renterID", renter);
+    
+    
+    //check that all fields are filled    
     if (listingTitle.length === 0 || propertyType.length === 0 || monthlyPrice.length === 0 || address.length == 0
         || monthlyPrice.length === 0 || bedrooms.length === 0 || bathrooms.length === 0 || startDate.length === 0
-        || endDate.length === 0 || size.length === 0 || description.length === 0)
+        || endDate.length === 0 || size.length === 0 || description.length === 0 )
+	//	|| photos[0].value.length === 0|| photos[1].value.length === 0|| photos[2].value.length === 0 )
     {
         alert("Please fill out all required fields!");
     }
     //send to servlet
     else
-    {/* WANT TO PRESERVE propertyType AS INT
-        if (propertyType === 1)
-        {
-            propertyType = "Apartment";
-        }
-        if (propertyType === 2)
-        {
-            propertyType = "House";
-        }
-        else 
-        {
-            propertyType = "Room";
-        }*/
+    {
+		// Note: WE WANT TO PRESERVE propertyType AS INT. Don't cast to "Apartment" or "House" based on int val
         const data = {
             PropertyType: propertyType,
             Title: listingTitle,
@@ -55,8 +82,6 @@ document.getElementById("submit-button").addEventListener('click', function() {
             Renter: renter
         };
         
-        console.log(renter);
-
         fetch('CreatePostServlet', {
             method: 'POST',
             headers: {
@@ -69,12 +94,14 @@ document.getElementById("submit-button").addEventListener('click', function() {
             {
                 alert("Successfully listed post");
 				return response.json();
-                //could redirect to a different webpage here
             }
         })
         .then(data => {
             if (data != null)
             {
+				imageData.append("postID", data["ID"]);
+				uploadImages(imageData); //Nested fetch call, do after successful fetch of post
+				
                 console.log(data); //SUCCESS (just print to console what the property u listed was)
             }
         })
@@ -85,42 +112,26 @@ document.getElementById("submit-button").addEventListener('click', function() {
     }
 })
 
-/*
-function getRenterId(username){
-	let renter = null;
-	const usernameJson = {
-		Username: username
-	}
-	
-	fetch('ValidateRenterServlet', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(usernameJson)
-    })
-    .then(response => {
-        if (response.ok)
-        {
-            alert("Successfully sent username");
-        }
-        else 
-        {
-            return response.json();
-        }
+function uploadImages(imageData){
+	fetch('StoreImageServlet', {
+		method: 'POST',
+        body: imageData
 	})
-	.then(renterId => {
-		if(renterId["renterId"] == null || renterId["renterId"] == 0){
-			alert("renterId null")
-		}
-		else{
-			console.log(renterId["renterId"]);
-			renter = renterId["renterId"];
+	.then(response => {
+		if (response.ok)
+		{
+			alert("Successfully uploaded images to database");
+			return response.text();
 		}
 	})
-	.catch(error => {
-		alert(error);
-	}); 
-	
-	return renter;
-}*/
+	.then(returnData => {
+		if(returnData != null && returnData != "")
+		{
+			console.log(returnData);
+		}
+	})
+    .catch(error => {
+		console.log("errored out in StoreImageServlet fetch: " + error)
+        alert(error);
+    }); 
+}

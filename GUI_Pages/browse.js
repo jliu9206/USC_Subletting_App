@@ -5,7 +5,7 @@ Use servlet + JDBC to get all properties
 
 //DetailedPost.html?postId=
 
-function addProperty(title, propertyType, description, price, picture, postId){
+function addProperty(title, propertyType, description, price, postId){
     let postWrapper = document.createElement("div")
     let card = document.createElement("div")
     let cardBody = document.createElement("div")
@@ -22,11 +22,12 @@ function addProperty(title, propertyType, description, price, picture, postId){
     p.classList.add("card-text")
     h6.classList.add("card-subtitle",  "mb-2", "text-muted")
     
-    img.src = picture == null || picture == ""? "image.png" : picture
-    img.alt = "Picture of property listing"
-    h5.innerHTML = (propertyType == 1? "House ": propertyType == 2?  "Apartment": "Room"  )+ " listing: " + title
-    p.innerHTML = description
-    h6. innerHTML = "$" + price + "/month"
+    img.src = "image.png";
+    img.alt = "Picture of property listing";
+    img.id = "propertyThumbnail" + postId; //set image id for later access
+    h5.innerHTML = (propertyType == 1? "House ": propertyType == 2?  "Apartment": "Room"  )+ " listing: " + title;
+    p.innerHTML = description;
+    h6. innerHTML = "$" + price + "/month";
     
     cardBody.appendChild(img)
     cardBody.appendChild(h5)
@@ -78,7 +79,7 @@ fetch('BrowsePostsServlet', {
         alert("data is null");
     }
     else
-    {
+    {		
         for(let i = 0; i < responseData["postList"].length; i++){
             let prop = responseData["postList"][i];
             let title = 		prop["Title"]
@@ -87,12 +88,13 @@ fetch('BrowsePostsServlet', {
             let price =         prop["MonthlyPrice"];
             let postId =        prop["ID"];
 
-            addProperty(title, propertyType, description, price, null, postId);
+            addProperty(title, propertyType, description, price, postId);
+        	getThumbnail(postId);	
         }
     }
 })
 .catch(error => {
-    alert(error);
+    alert("excuse me what is this error? " + error);
 });
 
 function search(){
@@ -181,10 +183,48 @@ function search(){
             let price =         prop["MonthlyPrice"];
             let postId =        prop["ID"];
 
-            addProperty(title, propertyType, description, price, null, postId);
+            addProperty(title, propertyType, description, price, postId);
+            getThumbnail(postId);
         }
 	})
 	.catch(error => {
 	    alert(error);
+	});
+}
+
+function getThumbnail(id){
+	const imgType = "thumbnail";
+	
+	const maybeThis = {
+    	postID: id,
+    	imageType: imgType
+	};
+		
+	fetch('GetImagesServlet', {
+	    method: 'POST',
+	    headers: {
+	        'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(maybeThis),
+	})
+	.then(response => {
+	    if (response.ok)
+	    {
+			return response.blob();
+	    }
+	    else {
+			alert("issue in GetImagesServlet, blob is not blobbing!");
+		}
+	})
+	.then(blob => {
+	    if (blob != null && blob["size"] != 1)
+	    {
+			console.log(blob);
+			const thumbnailURL = URL.createObjectURL(blob);
+	        document.querySelector("#propertyThumbnail" + id).src = thumbnailURL;
+	    }
+	})
+	.catch(error => {
+	    alert("Error fetching thumbnail: " + error);
 	});
 }

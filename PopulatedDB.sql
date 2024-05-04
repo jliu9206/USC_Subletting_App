@@ -74,7 +74,7 @@ CREATE TABLE Post (
 
 CREATE TABLE Image(
 	ID INT AUTO_INCREMENT PRIMARY KEY,
-    ImageData BLOB,
+    ImageData MEDIUMBLOB,
     SourcePost INT,
     Thumbnail BOOL,
     FOREIGN KEY (SourcePost) References Post(ID)

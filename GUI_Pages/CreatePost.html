@@ -10,6 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
     <script src = "loginregister.js"></script>
+    <style>
+		.images {
+			overflow: hidden;
+			max-width: 33vw;
+			margin-left: auto;
+			margin-right: auto;	
+			margin-top: 1vh;	
+			margin-bottom: 1vh;	
+		}
+		
+		.images img{
+			max-width: 100%; /* Ensure the image doesn't exceed the container's width */
+			max-height: 100%; /* Ensure the image doesn't exceed the container's height */		
+		}
+	</style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg ">
@@ -39,7 +54,7 @@
         </div>
     </nav>
 
-	<style>
+	<script>
 		var editListings = document.getElementById('edit');
 
 		let isRenter = localStorage.getItem("profileType"); 
@@ -49,7 +64,7 @@
 		} else {
 			editListings.style.display = 'none';
 		}	
-	</style>
+	</script>
 
     <div class="container mt-4">
         <h1>Create a New Listing!</h1>
@@ -111,14 +126,20 @@
                 </div>
 
                 <div class="col-12">
-                    <label for="photoUpload" class="form-label">Photo Upload 1</label>
-                    <input type="file" class="form-control" id="photoUpload">
+                    <label for="photoUpload" class="form-label">Photo Upload 1 (Property Thumbnail)</label>
+                    <input type="file" class="form-control" id="photoUpload1">
+                    
+                    <div class="images justify-content-center text-center" id="previewPhoto1" ></div>
                     
                     <label for="photoUpload" class="form-label">Photo Upload 2</label>
-                    <input type="file" class="form-control" id="photoUpload">
+                    <input type="file" class="form-control" id="photoUpload2">
                     
+                    <div class="images justify-content-center text-center" id="previewPhoto2" ></div>
+
                     <label for="photoUpload" class="form-label">Photo Upload 3</label>
-                    <input type="file" class="form-control" id="photoUpload">
+                    <input type="file" class="form-control" id="photoUpload3">
+                    
+                    <div class="images justify-content-center text-center" id="previewPhoto3" ></div>
                 </div>
                 <div class="col-12">
                     <button id="submit-button" type="submit" class="btn btn-custom">Submit</button>

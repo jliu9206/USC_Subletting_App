@@ -853,6 +853,77 @@ public static List<Post> browseSubleases(Connection conn) {
 		}
 		return reviews;
 	}
+
+	//Insert photos from CreatePost into the SQL database, associate with the post
+	public static String insertPhotos(Connection conn, ArrayList<Part> photos, int renterId) throws IOException {
+        PreparedStatement ps = null;
+        String out = null;
+
+        try {
+            String sql = "INSERT INTO Image(ImageData, SourcePost, Thumbnail) VALUES (?, ?, ?)";
+            ps = conn.prepareStatement(sql);
+
+            // Insert each photo into the database
+            for (int i = 0; i < photos.size(); i++) {
+                InputStream fileContent = photos.get(i).getInputStream();
+
+                ps.setBlob(1, fileContent); // Set image data
+                ps.setInt(2, renterId);     // Set SourcePost
+                ps.setBoolean(3, i == 0);   // Set Thumbnail (true for the first photo, false for others)
+
+                int rowsAffected = ps.executeUpdate(); //run the prepared statement every time
+
+                if (rowsAffected > 0) {
+                    out = "Successfully put images into SQL";
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Renter failed to insert image into SQL database: " + e.getMessage());
+            return null;
+        } finally {
+        	try {
+				if(ps != null) ps.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+        }
+        
+        return out;
+    }
+	
+	public static List<byte[]> loadPictures(Connection conn, int postID){
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<byte[]> images = new ArrayList<byte[]>();
+		
+		try {
+			//Get all of the image BLOBs with the first item in array = thumbnail
+            ps = conn.prepareStatement("SELECT ImageData\n"
+            		+ "FROM Image\n"
+            		+ "WHERE SourcePost = " + postID + "\n"
+            		+ "ORDER BY Thumbnail DESC;");
+            rs = ps.executeQuery();
+            
+            while(rs.next()) {
+            	images.add(rs.getBytes("ImageData"));
+            }
+			
+		} catch (SQLException e) {
+            System.out.println("User failed to load images from SQL database: " + e.getMessage());
+            return null;
+        } finally {
+			try {
+				if(ps != null) ps.close();
+				if(rs != null) rs.close();
+			} catch (SQLException sqle) {
+				System.out.println("Failed to close SQL statements: " + sqle.getMessage());
+			}
+		}
+		
+		System.out.println("The size of my bytes array is: " + images.size());
+		
+		return images;
+	}
 }
 
 
