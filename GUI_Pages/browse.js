@@ -4,6 +4,7 @@ Use servlet + JDBC to get all properties
 */
 
 //DetailedPost.html?postId=
+const myMap = new Map(); //HASH MAP HERE
 
 function addProperty(title, propertyType, description, price, postId){
     let postWrapper = document.createElement("div")
@@ -46,10 +47,10 @@ function addProperty(title, propertyType, description, price, postId){
 }
 
 // Sample cards, for testing purposes
-// addProperty("chipotle", 1, "testing 1 : Single room in house near Ralph's<br>Available May 2024-August 2024", 2, null, 1);
-// addProperty("boy hall", 2, "testing 2: Double room in apartment on frat row<br>Available May 2024-August 2024", 5000000000000, null, 2);
-// addProperty("UCLA", 3, "testing 3", 450, null, 3);
-// addProperty("Oppenheimer Tower", 1, "testing 4", 1800, null, 4);
+//addProperty("chipotle", 1, "testing 1 : Single room in house near Ralph's<br>Available May 2024-August 2024", 2, null, 1);
+//addProperty("boy hall", 2, "testing 2: Double room in apartment on frat row<br>Available May 2024-August 2024", 5000000000000, null, 2);
+//addProperty("UCLA", 3, "testing 3", 450, null, 3);
+//addProperty("Oppenheimer Tower", 1, "testing 4", 1800, null, 4);
 // end of sample cards
 
 const data = {
@@ -89,6 +90,8 @@ fetch('BrowsePostsServlet', {
             let postId =        prop["ID"];
 
             addProperty(title, propertyType, description, price, postId);
+            
+			console.log("trying to get thumbnail for " + postId);
         	getThumbnail(postId);	
         }
     }
@@ -184,7 +187,7 @@ function search(){
             let postId =        prop["ID"];
 
             addProperty(title, propertyType, description, price, postId);
-            getThumbnail(postId);
+	        document.querySelector("#propertyThumbnail" + postId).src = myMap.get(postId);
         }
 	})
 	.catch(error => {
@@ -221,8 +224,12 @@ function getThumbnail(id){
 	    {
 			console.log(blob);
 			const thumbnailURL = URL.createObjectURL(blob);
+			myMap.set(id, thumbnailURL);
 	        document.querySelector("#propertyThumbnail" + id).src = thumbnailURL;
 	    }
+	    else if (blob["size"] === 1){
+			myMap.set(id, "image.png")
+		}
 	})
 	.catch(error => {
 	    alert("Error fetching thumbnail: " + error);
