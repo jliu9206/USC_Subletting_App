@@ -230,7 +230,7 @@
 		var bath = document.getElementById("num-bath");
 		var size = document.getElementById("size");
 		const data = new URLSearchParams();
-		data.append('ID', localStorage.getItem('postID'));
+		data.append('postId', localStorage.getItem('postID')); // Needs to match GetPostServlet requirements
 		fetch('GetPostServlet', {
 			method: 'POST',
 			headers: {
