@@ -31,7 +31,9 @@ public class RegisterServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         User user = gson.fromJson(request.getReader(), User.class);
-        //System.out.println(user.getEmail());
+        String salt = BCrypt.gensalt();
+        user.setSalt(salt);
+
         Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE"); // INSERT YOUR PASSWORD HERE
         int loginIDuserID[];
 		try {
@@ -42,16 +44,5 @@ public class RegisterServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-        //String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(12)); // hash the function
-    }
-
-    private void insertIntoSpecificTable(Connection conn, String tableName, long userId, String username) throws SQLException {
-        String sql = "INSERT INTO " + tableName + " (ID, Username) VALUES (?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, userId);
-            stmt.setString(2, username);
-            stmt.executeUpdate();
-        }
     }
 }

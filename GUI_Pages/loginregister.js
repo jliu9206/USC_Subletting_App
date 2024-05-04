@@ -185,11 +185,9 @@ function loggedInFunctionality() {
     	document.getElementById("button").addEventListener("click", function (e) {
     		window.location.href = 'home.html';
     	})
-    	document.getElementById("profile").innerHTML = "";
-    	document.getElementById("messages").innerHTML = "";
+    	document.getElementById("navbar_ul").removeChild(document.getElementById("profile").parentNode);
+    	document.getElementById("navbar_ul").removeChild(document.getElementById("messages").parentNode);
     }
-	
-   	
 	if (localStorage.getItem("profileType") == "2") {
 		document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" href=\"CreatePost.html\">Create Post</a></li>";
     }

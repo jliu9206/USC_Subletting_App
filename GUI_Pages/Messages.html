@@ -165,22 +165,24 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id = "navbar_ul">
                     <li class="nav-item">
-                        <a class="nav-link" href="browse.html">Browse</a>
+                        <a class="nav-link" href="browse.html" id = "browse">Browse</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">Profile</a>
+                        <a class="nav-link" href="profile.html" id = "profile">Profile</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item"> 
+                   		<a class="nav-link active" href="Messages.html" id = "messages">Messages</a>
+                   	</li>
+                   
+                   	<li class="nav-item">
                         <a class="nav-link" href="favorites.html" id = "favorites-page">Favorites</a>
                     </li>
-                   <li class="nav-item"> 
-                   		<a class="nav-link active" href="Messages.html">Messages</a>
-                   </li>
+                   
                 </ul>
-                <p id="loggedInAs">You are logged in as</p>
-                <button onclick="location.href='logout.html'" class="btn" type="button">Logout</button>
+                <p id="loggedInAs"></p>
+                <button class="btn" type="button" id = "button"></button>
             </div>
         </div>
     </nav>
@@ -209,18 +211,31 @@
 	<script src="websocket.js"></script>
 	<script>
 			loggedInFunctionality();
-			document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
+			//document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
 			var socket;
 			let user = localStorage.getItem("username");
 			function connectToServer() {
 				//change path based on your project name
-				socket = new WebSocket("ws://localhost:8080/Project/ws");
+				socket = new WebSocket("ws://localhost:8080/FinalProject/ws");
 				socket.onopen = function(event) {
-					let address = localStorage.getItem("address");
-					document.getElementById("mychat").innerHTML += "Chatting about " + address + "!<br />";
+					
+					if (localStorage.getItem("username") == null) {
+						document.getElementById("mychat").innerHTML += "You must be logged in to send a message.<br />"
+						return;
+					}
+					
+					else {
+						let address = localStorage.getItem("address");
+						document.getElementById("mychat").innerHTML += "Chatting about " + address + "!<br />";
+					}
 				}
 				
 				socket.onmessage = function(event) {
+					
+					if (localStorage.getItem("username") == null) {
+						return false;
+					}
+
 				    let data = event.data.split(":");
 				    let username = data[0];
 				    let messageContent = data.slice(1).join(":");

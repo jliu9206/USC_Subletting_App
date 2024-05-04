@@ -29,6 +29,7 @@ CREATE TABLE Login ( /* stores information for all users */
     FirstName VARCHAR(55),
     LastName VARCHAR(55),
     TypeID INT,
+    Salt VARCHAR(256),
     FOREIGN KEY (TypeID) REFERENCES UserType(TypeID)
 );
 

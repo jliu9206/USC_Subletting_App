@@ -11,6 +11,7 @@ class User {
     private String firstName;
     private String lastName;
     private int profileType;
+    private String salt;
     
     public User() {}
 
@@ -37,6 +38,14 @@ class User {
 
     public String getUsername() {
         return username;
+    }
+    
+    public void setSalt(String salt) {
+    	this.salt = salt;
+    }
+    
+    public String getSalt() {
+    	return salt;
     }
 
     public void setUsername(String username) {
@@ -67,9 +76,8 @@ class User {
         return email;
     }
     
-    public String getPasswordHash() {
-    	
-    	return password;
+    public String getPasswordHash() {	
+    	return BCrypt.hashpw(password, salt);
     }
 
     public void setEmail(String email) {

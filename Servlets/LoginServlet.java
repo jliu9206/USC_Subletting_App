@@ -38,30 +38,6 @@ public class LoginServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-        /*String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        boolean isValidUser = false;
-
-        try {
-            String storedPasswordHash = getPasswordHashForUsername(username);
-            if (storedPasswordHash != null) {
-                isValidUser = BCrypt.checkpw(password, storedPasswordHash);
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Database connection problem", e);
-        }
-
-        if (isValidUser) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", username);
-            session.setMaxInactiveInterval(30 * 60);
-            response.sendRedirect("browse.html");
-        } else {
-            request.setAttribute("errorMessage", "Invalid username or password");
-            request.getRequestDispatcher("login.html").forward(request, response);
-        }*/
     		
     }
 }
