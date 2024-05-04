@@ -29,12 +29,27 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Messages.html" id = "messages">Messages</a>
                     </li>
+		    <li class="nav-item">
+	                <a class="nav-link active" href="Delete.html" id = "edit">Edit Listings</a>
+	            </li>
                 </ul>
                 <p id = "loggedInAs"></p>
                 <button class="btn" type="button" id = "button"></button>
             </div>
         </div>
     </nav>
+
+	<style>
+		var editListings = document.getElementById('edit');
+
+		let isRenter = localStorage.getItem("profileType"); 
+
+		if (isRenter == 2) {
+			editListings.style.display = 'block'; 
+		} else {
+			editListings.style.display = 'none';
+		}	
+	</style>
 
     <div class="container mt-4">
         <h1>Create a New Listing!</h1>
