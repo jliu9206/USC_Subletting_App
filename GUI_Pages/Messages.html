@@ -73,6 +73,7 @@
 		    float: right;
 		}
 	
+		/* Display triangle for chat bubble - http://projects.verou.me/bubbly/ lines 78-89 */
 		.user-bubble::after {
 		    content: '';
 			position: absolute;
@@ -94,6 +95,7 @@
 		    float: left;
 		}
 		
+		/* Display triangle for chat bubble - http://projects.verou.me/bubbly/ lines 99-111 */
 		.incoming-bubble::after {
 		    content: '';
 			position: absolute;
@@ -104,9 +106,8 @@
 			border: 10px solid transparent;
 			border-left-color: rgb(223, 223, 225);
 			border-right: 0;
-			border-bottom: 0;
-/* 			margin-top: 5px;			
- */			margin-left: -10px;
+			border-bottom: 0;		
+			margin-left: -10px;
 			transform: rotateY(180deg);
 		}
 	
@@ -165,24 +166,22 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id = "navbar_ul">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="browse.html" id = "browse">Browse</a>
+                        <a class="nav-link" href="browse.html">Browse</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html" id = "profile">Profile</a>
+                        <a class="nav-link" href="profile.html">Profile</a>
                     </li>
-                    <li class="nav-item"> 
-                   		<a class="nav-link active" href="Messages.html" id = "messages">Messages</a>
-                   	</li>
-                   
-                   	<li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="favorites.html" id = "favorites-page">Favorites</a>
                     </li>
-                   
+                   <li class="nav-item"> 
+                   		<a class="nav-link active" href="Messages.html">Messages</a>
+                   </li>
                 </ul>
-                <p id="loggedInAs"></p>
-                <button class="btn" type="button" id = "button"></button>
+                <p id="loggedInAs">You are logged in as</p>
+                <button onclick="location.href='logout.html'" class="btn" type="button">Logout</button>
             </div>
         </div>
     </nav>
@@ -211,63 +210,50 @@
 	<script src="websocket.js"></script>
 	<script>
 			loggedInFunctionality();
-			//document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
+			document.getElementById("loggedInAs").innerHTML += " " + localStorage.getItem("username");
 			var socket;
 			let user = localStorage.getItem("username");
 			function connectToServer() {
 				//change path based on your project name
-				socket = new WebSocket("ws://localhost:8080/FinalProject/ws");
+				socket = new WebSocket("ws://localhost:8080/Project/ws");
 				socket.onopen = function(event) {
-					
-					if (localStorage.getItem("username") == null) {
-						document.getElementById("mychat").innerHTML += "You must be logged in to send a message.<br />"
-						return;
-					}
-					
-					else {
-						let address = localStorage.getItem("address");
-						document.getElementById("mychat").innerHTML += "Chatting about " + address + "!<br />";
-					}
+					let address = localStorage.getItem("address");
+					document.getElementById("mychat").innerHTML += "Chatting about " + address + "!<br />";
 				}
 				
 				socket.onmessage = function(event) {
-					
-					if (localStorage.getItem("username") == null) {
-						return false;
-					}
-
 				    let data = event.data.split(":");
 				    let username = data[0];
 				    let messageContent = data.slice(1).join(":");
 
-				    // Create container for the message
+				    // Create container to hold entire message
 				    let messageContainer = document.createElement("div");
 				    messageContainer.className = "message-container";
 
-				    // Create element for username
-				    let usernameElement = document.createElement("div");
-				    usernameElement.className = "username";
-				    usernameElement.innerHTML = "<strong>" + username + "</strong>";
+				    // display username separately outside of bubble
+				    let uname = document.createElement("div");
+				    uname.className = "username";
+				    // make username bold
+				    uname.innerHTML = "<strong>" + username + "</strong>";
 
-				    // Determine if it's a user message or incoming message
+				    // user/incoming message
 				    if (username === localStorage.getItem("username")) {
-				        // If it's a user message, align the username to the left
-				        usernameElement.style.textAlign = "right";
+				    	// display username of sender on the right
+				    	uname.style.textAlign = "right";
 				    } else {
-				        // If it's an incoming message, align the username to the right
-				        usernameElement.style.textAlign = "left";
+				    	// display username of receiver on the left
+				    	uname.style.textAlign = "left";
 				    }
 
-				    // Append username to the message container
-				    messageContainer.appendChild(usernameElement);
+				    // add username to the message container
+				    messageContainer.appendChild(uname);
 
-				    // Create message bubble with message content
-				    let messageBubble = document.createElement("div");
-				    
+				    // message bubble to only hold message content
+				    let messageBubble = document.createElement("div");		    
 				    messageBubble.className = "message-bubble";
 				    messageBubble.innerHTML = messageContent;
 
-				    // Determine if it's a user message or incoming message
+				    // user message or incoming message?
 				    if (username === localStorage.getItem("username")) {
 				        // If it's a user message, float the message bubble to the left
 				        messageBubble.classList.add("user-bubble");
@@ -276,10 +262,10 @@
 				        messageBubble.classList.add("incoming-bubble");
 				    }
 
-				    // Append message bubble to the message container
+				    // add message bubble with content to container
 				    messageContainer.appendChild(messageBubble);
 
-				    // Append the message container to the message box
+				    // add message container to message box 
 				    document.getElementById("message-box").appendChild(messageContainer);
 
 				    // Scroll to the bottom of the message box
