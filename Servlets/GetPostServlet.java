@@ -15,15 +15,16 @@ public class GetPostServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	Gson gson = new Gson();
         PrintWriter pw = response.getWriter();
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 
-        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
-        Post post = JDBCPost.getSublease(conn, Integer.parseInt(request.getParameter("postId")));
+        Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
+        Post post = gson.fromJson(request.getReader(), Post.class);
+        post = JDBCPost.getSublease(conn, post.getID());
         
-        Gson gson = new Gson();
+       
         String json = new Gson().toJson(post);
 		
         //getSublease() should return null if failed

@@ -147,8 +147,8 @@
 		
 		<div id="photo-popup">
 			<!--change to images from database-->
-			<img id="propPhoto1" src="test-img.jpeg" class="photos" alt="IMAGE" />
-			<img id="propPhoto2" src="test-img-2.jpeg" class="photos" alt="IMAGE" />
+			<img src="test-img.jpeg" class="photos" alt="IMAGE" />
+			<img src="test-img-2.jpeg" class="photos" alt="IMAGE" />
 		</div>
 
 		<div class="container mt-4">
@@ -229,14 +229,20 @@
 		var rooms = document.getElementById("num-rooms");
 		var bath = document.getElementById("num-bath");
 		var size = document.getElementById("size");
-		const data = new URLSearchParams();
-		data.append('postId', localStorage.getItem('postID')); // Needs to match GetPostServlet requirements
+		/*const data = new URLSearchParams();
+		data.append('ID', localStorage.getItem('postID'));*/
+		
+		const data = {	
+			ID: parseInt(localStorage.getItem("postID"))
+		};
+		
 		fetch('GetPostServlet', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+				//'Content-Type': 'application/x-www-form-urlencoded'
+				'Content-Type': 'application/json'
 			},
-			body: data
+			body: JSON.stringify(data)
 		})
 		.then(response => {
 			if (response.ok) {
@@ -256,10 +262,6 @@
 			rooms.innerHTML = data.NumberOfBedrooms;
 			bath.innerHTML = data.NumberOfBathrooms;
 			size.innerHTML = data.Size;
-			
-			//Populate images with 2 more fetches
-			loadImages("detailedPostLeft");
-			loadImages("detailedPostRight");
 		})
 		.catch(error => {
 			console.error('There was a problem with the fetch operation:', error);
@@ -269,31 +271,6 @@
 			window.location.href = 'Messages.html'; 
 		})
 		
-		/*function loggedInFunctionality() {
-
-			if (localStorage.getItem("username") != null) {
-				document.getElementById("loggedInAs").innerHTML = "You are logged in as " + localStorage.getItem("username");
-				document.getElementById("button").innerHTML += "Logout";
-				document.getElementById("button").addEventListener("click", function (e) {
-					logout();
-				})
-			}
-
-			else {
-				document.getElementById("loggedInAs").innerHTML = "";
-				document.getElementById("button").innerHTML += "Login";
-				document.getElementById("button").addEventListener("click", function (e) {
-					window.location.href = 'home.html';
-				})
-				document.getElementById("profile").innerHTML = "";
-				document.getElementById("messages").innerHTML = "";
-			}
-
-
-			if (localStorage.getItem("profileType") == "2") {
-				document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" href=\"CreatePost.html\">Create Post</a></li>";
-			}
-		}*/
     		//to add to favorites
 		document.getElementById("favorite").addEventListener('click', function() {
 			const data = {
@@ -334,6 +311,7 @@
 				reviewData.append("username", username);
 				reviewData.append("rating", rating);
 				reviewData.append("comment", comment);
+				console.log(reviewData);
 
 				fetch('ReviewServlet', {
 					method: "POST",
@@ -391,46 +369,6 @@
 				container.innerHTML = '<p>Error loading reviews.</p>';
 			});
 		}
-		
-		function loadImages(imgType) {
-			const id = localStorage.getItem("postID");
-			
-			const maybeThis = {
-		    	postID: id,
-		    	imageType: imgType
-			};
-				
-			fetch('GetImagesServlet', {
-			    method: 'POST',
-			    headers: {
-			        'Content-Type': 'application/json'
-			    },
-			    body: JSON.stringify(maybeThis),
-			})
-			.then(response => {
-			    if (response.ok)
-			    {
-					return response.blob();
-			    }
-			    else {
-					alert("issue in GetImagesServlet, blob is not blobbing!");
-				}
-			})
-			.then(blob => {
-			    if (blob != null && blob["size"] != 1)
-			    {
-					console.log(blob);
-					const thumbnailURL = URL.createObjectURL(blob);
-					const imgId = imgType == "detailedPostLeft"? 1 : 2; // if we are calling this for the left or right image
-			        document.querySelector("#propPhoto" + imgId).src = thumbnailURL;
-			    }
-			})
-			.catch(error => {
-			    alert("Error fetching thumbnail: " + error);
-			});
-		}
-		
-		
 		fetchReviews();
 
 

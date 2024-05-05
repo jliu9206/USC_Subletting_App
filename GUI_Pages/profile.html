@@ -44,6 +44,12 @@
             </div>
         </div>
     </nav>
+    
+    
+     <div id = "display-info" class = "container mt-4">
+         <h1>Profile Information</h1>
+        
+     </div>
 
     <script>
 		loggedInFunctionality();
@@ -51,20 +57,7 @@
 			alert("You must log in to have a profile.");
 		}
 	    else{
-
-	     // Format and display the response in a table under the form - not styled yet
-	     var table = "<table><tr><th>Field</th><th>Value</th></tr>";
-	
-	     table += "<tr><td>" + 'Username' + "</td><td>" + localStorage.getItem("username") + "</td></tr>";
-	     table += "<tr><td>" + 'Profile Type' + "</td><td>" + localStorage.getItem("profileType") + "</td></tr>";
-	     table += "<tr><td>" + 'Login ID' + "</td><td>" + localStorage.getItem("loginID") + "</td></tr>";
-	     table += "<tr><td>" + 'User ID' + "</td><td>" + localStorage.getItem("userID") + "</td></tr>";
-	     
-	     // What else should we display
-	     
-	     table += "</table>";
-
-	     document.getElementById("display-info").innerHTML = table;
+	    	profileInformation();
 		}
 	</script>
 	

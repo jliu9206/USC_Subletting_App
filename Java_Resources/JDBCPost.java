@@ -1,4 +1,6 @@
 package finalproject;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.Part;
 
 public class JDBCPost {
 
@@ -49,7 +53,7 @@ public class JDBCPost {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			// INSERT YOUR DB NAME HERE INSTEAD OF "finalproject", WHICH IS MINE
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/sys?user=" + user + "&password=" + pw);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/finalproject?user=" + user + "&password=" + pw);
 		}
 		catch(Exception e) {
 			System.out.println("connection to SQL credentials invalid, " + e.getMessage());
@@ -547,27 +551,28 @@ public static List<Post> browseSubleases(Connection conn) {
 	}
 	
 	// Retrieves a User from the database given the user's ID
-	public User getUser(Connection conn, int userID) {
+	public static User getUser(Connection conn, int userID) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		User user = null;
 
 		try {
-			String query = "SELECT * FROM Users WHERE UserID = ?";
+			String query = "SELECT Email, FirstName, LastName FROM LOGIN WHERE ID = ?";
 			ps = conn.prepareStatement(query);
 			ps.setInt(1, userID);
 			rs = ps.executeQuery();
+			rs.next();
 
-			if (rs.next()) {
-				String username = rs.getString("Username");
-				String password = rs.getString("Password");
+			//if (rs.next()) {
+				//String username = rs.getString("Username");
+				//String password = rs.getString("Password");
 				String email = rs.getString("Email");
 				String firstName = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
-				int profileType = rs.getInt("ProfileType");
+				//int profileType = rs.getInt("ProfileType");
 
-				user = new User(username, password, email, firstName, lastName, profileType);
-			}
+				user = new User(email, firstName, lastName);
+			//}
 		} catch (SQLException e) {
 			System.out.println("Error retrieving user: " + e.getMessage());
 		} finally {

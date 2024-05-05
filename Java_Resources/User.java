@@ -25,8 +25,7 @@ class User {
         this.profileType = profileType;
     }
 
-    public User(String username, String email, String firstName, String lastName) {
-        this.username = username;
+    public User(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -119,7 +118,7 @@ class Subletter extends User {
     }
 
     public Subletter(String username, String email, String firstName, String lastName) {
-        super(username, email, firstName, lastName);
+        super(email, firstName, lastName);
     }
 
     public List<Post> getFavoriteProperties() {
@@ -163,7 +162,7 @@ class Renter extends User {
     }
 
     public Renter(String username, String email, String firstName, String lastName) {
-        super(username, email, firstName, lastName);
+        super(email, firstName, lastName);
     }
 
     /*public List<Post> getProperties() {
