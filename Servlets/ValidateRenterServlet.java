@@ -23,7 +23,7 @@ public class ValidateRenterServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter pw = new PrintWriter(response.getWriter());
-		Connection conn = JDBCPost.connectSQL("root", "[your password]");
+		Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
 		
 		Gson g = new Gson();
 		int renterId = JDBCPost.getRenterId(conn, request.getParameter("Username"));
@@ -32,7 +32,6 @@ public class ValidateRenterServlet extends HttpServlet {
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		System.out.println("got the renterid");
 		pw.write(jsonString);
 		pw.flush();
 		pw.close();

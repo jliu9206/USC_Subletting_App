@@ -19,7 +19,7 @@ public class ReviewServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 
         int postId = Integer.parseInt(request.getParameter("postId"));
-        try (Connection conn = JDBCPost.connectSQL("root", "Justin2004")) {
+        try (Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE")) {
         	
             List<Review> reviews = JDBCPost.getReviews(conn, postId);
             Gson gson = new Gson();
@@ -40,7 +40,7 @@ public class ReviewServlet extends HttpServlet {
         String username = request.getParameter("username");
         int rating = Integer.parseInt(request.getParameter("rating"));
         String comment = request.getParameter("comment");
-        try(Connection conn = JDBCPost.connectSQL("root", "Justin2004")){
+        try(Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE")){
         	int success = JDBCPost.addReview(conn, postId, username, rating, comment);
         	if(success == -1) {
         		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -60,6 +60,5 @@ public class ReviewServlet extends HttpServlet {
             response.getWriter().write("{\"error\":\"Database connection problem.\"}");
             e.printStackTrace();
 		}
-       
     }
 }

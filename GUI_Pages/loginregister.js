@@ -69,7 +69,7 @@ function register() {
                     }
                     
                     else {
-                        alert(`Successfully registed user`);
+                        alert(`Successfully registered user`);
                         const p1 = document.createElement("p");
                         p1.innerHTML = data[0];
                         const p2 = document.createElement("p");
@@ -92,72 +92,71 @@ function register() {
 
 function loginUser() {
 
-    	event.preventDefault();
+	event.preventDefault();
+    
+    const username = document.querySelector("#loginUsername").value.trim();
+    const password = document.querySelector("#loginPassword").value;
+    
+    if (username.length == 0 || password.length == 0) {
+        alert("Missing login information.");
+    }
+    
+    
+    else {
+    
+        const user = {
+            username: username,
+            password: password
+        };
         
-        const username = document.querySelector("#loginUsername").value.trim();
-        const password = document.querySelector("#loginPassword").value;
-       
-        
-        if (username.length == 0 || password.length == 0) {
-            alert("Missing login information.");
-        }
+        console.log(user);
+        console.log(JSON.stringify(user));
         
         
-        else {
-        
-            const user = {
-                username: username,
-                password: password
-            };
-            
-            console.log(user);
-            console.log(JSON.stringify(user));
-            
-            
-           fetch('LoginServlet', {
-                        
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(user)	
-                })
+    fetch('LoginServlet', {
                 
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response loginServlet was not ok');
-                    }
-                    
-                    
-                    return response.json();
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(user)	
+        })
         
-                })
-                .then(data => {
-                    if (data[0] == -1) {
-                        alert("Username does not exist.");
-                    }
-                    
-                    else if (data[0] == -2) {
-                        alert("Invalid username/password combination.");
-                    }
-                    
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response loginServlet was not ok');
+            }
+            
+            
+            return response.json();
 
-                    else {
-                        alert(`Successfully logged in user`);
-                        const p1 = document.createElement("p");
-                        p1.innerHTML = data[0];
-                        const p2 = document.createElement("p");
-                        p2.innerHTML = data[1];
-                        const p3 = document.createElement("p");
-                        p3.innerHTML = data[2];
+        })
+        .then(data => {
+            if (data[0] == -1) {
+                alert("Username does not exist.");
+            }
+            
+            else if (data[0] == -2) {
+                alert("Invalid username/password combination.");
+            }
+            
 
-                        localStorage.setItem("username", username);
-                        localStorage.setItem("profileType", parseInt(p3.innerHTML));
-                        localStorage.setItem("loginID", parseInt(p1.innerHTML));
-                        localStorage.setItem("userID", parseInt(p2.innerHTML));
-                        window.location.href = "browse.html";
-                    }
-                    
-                })
-        }
+            else {
+                alert(`Successfully logged in user`);
+                const p1 = document.createElement("p");
+                p1.innerHTML = data[0];
+                const p2 = document.createElement("p");
+                p2.innerHTML = data[1];
+                const p3 = document.createElement("p");
+                p3.innerHTML = data[2];
+
+                localStorage.setItem("username", username);
+                localStorage.setItem("profileType", parseInt(p3.innerHTML));
+                localStorage.setItem("loginID", parseInt(p1.innerHTML));
+                localStorage.setItem("userID", parseInt(p2.innerHTML));
+                window.location.href = "browse.html";
+            }
+            
+        })
+    }
 }
 
 function logout() {
@@ -189,55 +188,51 @@ function loggedInFunctionality() {
     	document.getElementById("navbar_ul").removeChild(document.getElementById("messages").parentNode);
     }
 	if (localStorage.getItem("profileType") == "2") {
-		document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" href=\"CreatePost.html\">Create Post</a></li>";
+		document.getElementById("navbar_ul").innerHTML += "<li class=\"nav-item\"><a class=\"nav-link\" id = \"create-post\" href=\"CreatePost.html\">Create Post</a></li>";
     }
 }
 
 function profileInformation() {
 		 
-		 const obj = {
-		 	loginID: parseInt(localStorage.getItem("loginID"))
-		 };
-		 
-		 console.log(obj);
-		 
-		 fetch('ProfileServlet', {
-                        
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(obj)	
-                })
-                
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response profileServlet was not ok');
-                    }
-                    
-                    
-                    return response.json();
-        
-                })
-                .then(data => {
-					
-					console.log(data);
-					
-					var table = "<table><tr><th>Field</th><th>Value</th></tr>";
-					table += "<tr><td>" + 'First Name' + "</td><td>" + data.firstName + "</td></tr>";
-					table += "<tr><td>" + 'Last Name' + "</td><td>" + data.lastName + "</td></tr>";
-					table += "<tr><td>" + 'Username' + "</td><td>" + localStorage.getItem("username") + "</td></tr>";
-					table += "<tr><td>" + 'Email' + "</td><td>" + data.email + "</td></tr>";
-					let profileTypeInt = parseInt(localStorage.getItem("profileType"));
-					const profileType = (profileTypeInt == 1 ? "Subletter" : "Renter");
-					table += "<tr><td>" + 'Profile Type' + "</td><td>" + profileType + "</td></tr>";
-					//table += "<tr><td>" + 'Login ID' + "</td><td>" + localStorage.getItem("loginID") + "</td></tr>";
-					//table += "<tr><td>" + 'User ID' + "</td><td>" + localStorage.getItem("userID") + "</td></tr>";
-					 
-					 // What else should we display
-					 
-					 table += "</table>";
-					 
-					 document.getElementById("display-info").innerHTML += table;
-					
-                })
+    const obj = {
+        loginID: parseInt(localStorage.getItem("loginID"))
+    };
+	 
+    //console.log(obj);
+	 
+    fetch('ProfileServlet', {
+	                
+	        method: "POST",
+	        headers: {"Content-Type": "application/json"},
+	        body: JSON.stringify(obj)	
+	    })
+	    
+	    .then(response => {
+	        if (!response.ok) {
+	            throw new Error('Network response profileServlet was not ok');
+	        }
+	        
+	        
+	        return response.json();
+	
+	    })
+	    .then(data => {
+			
+			console.log(data);
+			
+			var table = "<table><tr><th>Field</th><th>Value</th></tr>";
+			table += "<tr><td>" + 'First Name' + "</td><td>" + data.firstName + "</td></tr>";
+			table += "<tr><td>" + 'Last Name' + "</td><td>" + data.lastName + "</td></tr>";
+			table += "<tr><td>" + 'Username' + "</td><td>" + localStorage.getItem("username") + "</td></tr>";
+			table += "<tr><td>" + 'Email' + "</td><td>" + data.email + "</td></tr>";
+			let profileTypeInt = parseInt(localStorage.getItem("profileType"));
+			const profileType = (profileTypeInt == 1 ? "Subletter" : "Renter");
+			table += "<tr><td>" + 'Profile Type' + "</td><td>" + profileType + "</td></tr>";
+			 
+			 table += "</table>";
+			 
+			 document.getElementById("display-info").innerHTML += table;
+			
+	    })
 	
 }

@@ -21,32 +21,32 @@ public class DeleteFavoriteServlet extends HttpServlet {
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 	PrintWriter pw = response.getWriter();
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
+		PrintWriter pw = response.getWriter();
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
 
-			Post post = new Gson().fromJson(request.getReader(), Post.class);
+		Post post = new Gson().fromJson(request.getReader(), Post.class);
 //			int subletID = Integer.parseInt(request.getParameter("Renter"));
 //			int postID = Integer.parseInt(request.getParameter("ID"));
-	        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
-	        int postID = post.getID();
-	        int subletID = post.getRenter();
-	        System.out.println("postiD " + postID);
-	        System.out.println("subletiD " + subletID);
-	        int valid = JDBCPost.removeFavorite(conn, postID, subletID);
+		Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
+		int postID = post.getID();
+		int subletID = post.getRenter();
+		System.out.println("postiD " + postID);
+		System.out.println("subletiD " + subletID);
+		int valid = JDBCPost.removeFavorite(conn, postID, subletID);
 
-	        
-	        if (valid == 1)
-	        {
-	        	response.setStatus(HttpServletResponse.SC_OK);
-				pw.flush();
-	        }
-	        
-	        else 
-	        {
-	        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				pw.flush();
-	        }
+		
+		if (valid == 1)
+		{
+			response.setStatus(HttpServletResponse.SC_OK);
+			pw.flush();
+		}
+		
+		else 
+		{
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			pw.flush();
+		}
 	}
 
 }

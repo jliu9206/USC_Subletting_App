@@ -45,4 +45,6 @@ class Profile {
 	
 	int loginID;
 	int getLoginID() {
-		return logi
+		return loginID;
+	}
+}

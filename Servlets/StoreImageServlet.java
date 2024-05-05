@@ -28,7 +28,7 @@ public class StoreImageServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 
 		// Get all parts with the name 'images[]'
-        Connection conn = JDBCPost.connectSQL("root", "L1llybug$1-)zndapoinwgj");
+        Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
         ArrayList<Part> imageParts = new ArrayList<>(request.getParts());
         int renterId = Integer.parseInt(request.getParameter("postID"));
         
@@ -36,7 +36,6 @@ public class StoreImageServlet extends HttpServlet {
         
         //set status based on the result of insertPhotos
     	response.setStatus(sendBack == null? HttpServletResponse.SC_BAD_REQUEST : HttpServletResponse.SC_OK);
-    	
 		pw.write(sendBack);
 		pw.flush();
     }

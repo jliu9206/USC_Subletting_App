@@ -23,7 +23,7 @@ public class BrowsePostsServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 
-        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
+        Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
         AllPosts all = new AllPosts(conn);
 
         Gson gson = new Gson();
@@ -61,9 +61,4 @@ public class BrowsePostsServlet extends HttpServlet {
             postList = newPostList;
         }
     }
-
-    //  idea for PriorityQueue
-    //      based on username's current address (google maps API)
-    //      return posts by proximity
-    //      this way, can actually use the "username" parameter sent from browse.js
 }

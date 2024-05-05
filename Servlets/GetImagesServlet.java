@@ -28,7 +28,7 @@ public class GetImagesServlet extends HttpServlet {
 		response.setContentType("image/*");
 
 		// Get images from the database
-        Connection conn = JDBCPost.connectSQL("root", "L1llybug$1-)zndapoinwgj");
+        Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
         
         //TRYING TO GET THE postID from the JSON isn't working for some reason if I don't use GSON
         Gson gson = new Gson();
@@ -36,10 +36,6 @@ public class GetImagesServlet extends HttpServlet {
 		int postId = pi.postID;
 		String imageType = pi.imageType;
 		
-//
-//        String postIDParam = request.getParameter("postID");
-//        System.out.println("Post ID Parameter: " + postIDParam); // Log parameter value
-//        
         List<byte[]> pictures = JDBCPost.loadPictures(conn, postId);
         
         if(pictures != null && pictures.size() != 0) { //if there are pictures in the database

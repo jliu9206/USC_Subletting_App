@@ -24,9 +24,7 @@ public class LoginServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         User user = gson.fromJson(request.getReader(), User.class);
-        System.out.println(user.getUsername());
-        System.out.println(user.getPasswordHash());
-        
+
         Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE"); // INSERT YOUR PASSWORD HERE
         int loginIDuserID[];
         

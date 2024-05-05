@@ -28,15 +28,6 @@ public class SearchServlet extends HttpServlet {
 		ArrayList<Post> posts = new ArrayList<Post>();
 		
 		SearchFilter sf = gson.fromJson(request.getReader(), SearchFilter.class);
-		System.out.println(sf.name);
-		System.out.println(sf.propType);
-		System.out.println(sf.size);
-		System.out.println(sf.priceMin);
-		System.out.println(sf.priceMax);
-		System.out.println(sf.dateFrom);
-		System.out.println(sf.dateTo);
-		System.out.println(sf.bedrooms);
-		System.out.println(sf.bathrooms);
 		
 		Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
 		

@@ -4,6 +4,7 @@ Use servlet + JDBC to get all properties
 */
 
 //DetailedPost.html?postId=
+const myMap = new Map();
 
 function addProperty(title, propertyType, description, price, postId){
     let postWrapper = document.createElement("div")
@@ -89,7 +90,8 @@ fetch('BrowsePostsServlet', {
             let postId =        prop["ID"];
 
             addProperty(title, propertyType, description, price, postId);
-        	getThumbnail(postId);	
+        	getThumbnail(postId);
+        	//document.querySelector("#propertyThumbnail" + postId).src = myMap.get(postId);	
         }
     }
 })
@@ -110,7 +112,6 @@ function search(){
     const dateTo = document.querySelector("#dateTo").value;
     const bedrooms = document.querySelector("#bedrooms").value;
     const bathrooms = document.querySelector("#bathrooms").value;
-    
  	const priceMin = document.querySelector("#priceMin").value;
     const priceMax = document.querySelector("#priceMax").value;
     
@@ -221,8 +222,13 @@ function getThumbnail(id){
 	    {
 			console.log(blob);
 			const thumbnailURL = URL.createObjectURL(blob);
+			myMap.set(id, thumbnailURL);
 	        document.querySelector("#propertyThumbnail" + id).src = thumbnailURL;
 	    }
+	    
+	    else if (blob["size"] === 1) {
+			myMap.set(id, "image.png");
+		}
 	})
 	.catch(error => {
 	    alert("Error fetching thumbnail: " + error);

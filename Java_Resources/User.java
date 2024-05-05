@@ -87,7 +87,7 @@ class User {
         return profileType;
     }
 
-   public void setProfileType(int profileType) {
+    public void setProfileType(int profileType) {
         this.profileType = profileType; // this determines access to specific tables in database
     }
 
@@ -106,11 +106,6 @@ class User {
 // Renter class that extends User
 class Subletter extends User {
     private List<Post> favoriteProperties;
-
-    /*public Subletter(Integer userID, String username, String password, String email, int profileType) {
-        super(userID, username, password, email, profileType);
-        this.favoriteProperties = new ArrayList<>();
-    }*/
     
     public Subletter() {
     	
@@ -140,11 +135,6 @@ class Subletter extends User {
         // Filter properties based on user budger
         return new ArrayList<>();
     }
-
-    /*public void leaveReview(Post property, Review review) {
-        // need to integrate with Post class, adds a review to the Review list
-        property.addReview(review);
-    }*/
 }
 
 
@@ -164,10 +154,6 @@ class Renter extends User {
     public Renter(String username, String email, String firstName, String lastName) {
         super(email, firstName, lastName);
     }
-
-    /*public List<Post> getProperties() {
-        return new ArrayList<>(properties);
-    }*/
 
     public void addListing(Post property) {
         properties.add(property);

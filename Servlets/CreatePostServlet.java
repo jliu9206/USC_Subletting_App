@@ -23,7 +23,7 @@ public class CreatePostServlet extends HttpServlet {
 		//Format input as post from json using GSON
         Post post = new Gson().fromJson(request.getReader(), Post.class);
         
-        Connection conn = JDBCPost.connectSQL("root", "[Insert your own password]");
+        Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
         int val = JDBCPost.insertSublease(conn, post); //Add listing, return -1 if fail otherwise return postId
         
         Gson gson = new Gson();

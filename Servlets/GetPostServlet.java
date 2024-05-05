@@ -24,7 +24,6 @@ public class GetPostServlet extends HttpServlet {
         Post post = gson.fromJson(request.getReader(), Post.class);
         post = JDBCPost.getSublease(conn, post.getID());
         
-       
         String json = new Gson().toJson(post);
 		
         //getSublease() should return null if failed

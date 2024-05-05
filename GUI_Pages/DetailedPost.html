@@ -147,8 +147,8 @@
 		
 		<div id="photo-popup">
 			<!--change to images from database-->
-			<img src="test-img.jpeg" class="photos" alt="IMAGE" />
-			<img src="test-img-2.jpeg" class="photos" alt="IMAGE" />
+			<img id="propPhoto1" src="test-img.jpeg" class="photos" alt="IMAGE" />
+			<img id="propPhoto2" src="test-img-2.jpeg" class="photos" alt="IMAGE" />
 		</div>
 
 		<div class="container mt-4">
@@ -262,6 +262,9 @@
 			rooms.innerHTML = data.NumberOfBedrooms;
 			bath.innerHTML = data.NumberOfBathrooms;
 			size.innerHTML = data.Size;
+			
+			loadImages("detailedPostLeft");
+			loadImages("detailedPostRight");
 		})
 		.catch(error => {
 			console.error('There was a problem with the fetch operation:', error);
@@ -369,6 +372,46 @@
 				container.innerHTML = '<p>Error loading reviews.</p>';
 			});
 		}
+		
+		
+		function loadImages(imgType) {
+			const id = localStorage.getItem("postID");
+
+			const maybeThis = {
+		    	postID: id,
+		    	imageType: imgType
+			};
+
+			fetch('GetImagesServlet', {
+			    method: 'POST',
+			    headers: {
+			        'Content-Type': 'application/json'
+			    },
+			    body: JSON.stringify(maybeThis),
+			})
+			.then(response => {
+			    if (response.ok)
+			    {
+					return response.blob();
+			    }
+			    else {
+					alert("issue in GetImagesServlet, blob is not blobbing!");
+				}
+			})
+			.then(blob => {
+			    if (blob != null && blob["size"] != 1)
+			    {
+					console.log(blob);
+					const thumbnailURL = URL.createObjectURL(blob);
+					const imgId = imgType == "detailedPostLeft"? 1 : 2; // if we are calling this for the left or right image
+			        document.querySelector("#propPhoto" + imgId).src = thumbnailURL;
+			    }
+			})
+			.catch(error => {
+			    alert("Error fetching thumbnail: " + error);
+			});
+		}
+		
 		fetchReviews();
 
 

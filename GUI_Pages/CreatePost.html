@@ -44,9 +44,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Messages.html" id = "messages">Messages</a>
                     </li>
-		    <li class="nav-item">
-	                <a class="nav-link active" href="Delete.html" id = "edit">Edit Listings</a>
-	            </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="Messages.html" id = "favorites-page">Favorites</a>
+                    </li>
+		    	<!-- <li class="nav-item">
+	                <a class="nav-link" href="Delete.html" id = "edit">Edit Listings</a>
+	            </li>-->
                 </ul>
                 <p id = "loggedInAs"></p>
                 <button class="btn" type="button" id = "button"></button>
@@ -157,6 +161,7 @@
     <script src="createPost.js"></script>
     <script>
 	    loggedInFunctionality();
+	    document.getElementById("create-post").classList += " active";
     </script>
 
 

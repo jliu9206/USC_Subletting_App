@@ -23,26 +23,26 @@ public class GetFavoritesServlet extends HttpServlet {
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 	PrintWriter pw = response.getWriter();
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
+		PrintWriter pw = response.getWriter();
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
 
-			//just using post to get the info from the front end, disregard the getRenter, it's passing subletter's ID
-			Post post = new Gson().fromJson(request.getReader(), Post.class);
-			
-	        Connection conn = JDBCPost.connectSQL("root", "@CS201Pass");
+		//just using post to get the info from the front end, disregard the getRenter, it's passing subletter's ID
+		Post post = new Gson().fromJson(request.getReader(), Post.class);
+		
+		Connection conn = JDBCPost.connectSQL("root", "YOUR_PASSWORD_HERE");
 
-			int subletID = post.getRenter();
+		int subletID = post.getRenter();
 
-			ArrayList<Post> postReturn = JDBCPost.getAllFavorites(conn, subletID);
+		ArrayList<Post> postReturn = JDBCPost.getAllFavorites(conn, subletID);
 
-	        Gson gson = new Gson();
-	        
-	    	JsonArray jsonArray = new JsonArray();
-			
-			jsonArray.add(gson.toJsonTree(postReturn));
-			
-			pw.write(jsonArray.toString());
-			pw.flush();
+		Gson gson = new Gson();
+		
+		JsonArray jsonArray = new JsonArray();
+		
+		jsonArray.add(gson.toJsonTree(postReturn));
+		
+		pw.write(jsonArray.toString());
+		pw.flush();
 	}
 }

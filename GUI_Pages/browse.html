@@ -49,9 +49,9 @@
 		    		<li class="nav-item">
                         <a class="nav-link" href="favorites.html" id = "favorites-page">Favorites</a>
                     </li>
-                    <li class="nav-item">
+                    <!--  <li class="nav-item">
                         <a class="nav-link" href="Delete.html" id="edit">Edit Listings</a>
-                    </li>
+                    </li>-->
                 </ul>
                 <p id = "loggedInAs"></p>
                 <button class="btn" type="button" id = "button"></button>
@@ -59,18 +59,6 @@
         </div>
     
     </nav>
-    
-    <script>		
-		var editListings = document.getElementById('edit');
-
-		let isRenter = localStorage.getItem("profileType"); 
-
-		if (isRenter == 2) {
-			editListings.style.display = 'block'; 
-		} else {
-			editListings.style.display = 'none';
-		}	
-    </script>
 
 <!-- Search Form -->
 <div class="container mt-4">
@@ -83,14 +71,14 @@
             </div>
             <div class="col-sm-4">
                 <label for="propType" class="form-label">Property Type</label><br>
-			  <select name="propType" id="propType" class = "form-control">
-			  <optgroup label = "Choose property type">
-			  	<option value=0>All</option>
-			  	<option value=1>Apartment</option>
-			      <option value=2>House</option>
-			      <option value=3>Room</option>
-			  </optgroup>
-			  </select>
+                <select name="propType" id="propType" class = "form-control">
+                <optgroup label = "Choose property type">
+                    <option value=0>All</option>
+                    <option value=1>Apartment</option>
+                    <option value=2>House</option>
+                    <option value=3>Room</option>
+                </optgroup>
+                </select>
             </div>
             
             <div class="col-sm-4">

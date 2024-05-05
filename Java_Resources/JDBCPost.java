@@ -562,16 +562,10 @@ public static List<Post> browseSubleases(Connection conn) {
 			ps.setInt(1, userID);
 			rs = ps.executeQuery();
 			rs.next();
-
-			//if (rs.next()) {
-				//String username = rs.getString("Username");
-				//String password = rs.getString("Password");
-				String email = rs.getString("Email");
-				String firstName = rs.getString("FirstName");
-				String lastName = rs.getString("LastName");
-				//int profileType = rs.getInt("ProfileType");
-
-				user = new User(email, firstName, lastName);
+			String email = rs.getString("Email");
+			String firstName = rs.getString("FirstName");
+			String lastName = rs.getString("LastName");
+			user = new User(email, firstName, lastName);
 			//}
 		} catch (SQLException e) {
 			System.out.println("Error retrieving user: " + e.getMessage());
@@ -904,9 +898,9 @@ public static List<Post> browseSubleases(Connection conn) {
 		try {
 			//Get all of the image BLOBs with the first item in array = thumbnail
             ps = conn.prepareStatement("SELECT ImageData\n"
-            		+ "FROM Image\n"
-            		+ "WHERE SourcePost = " + postID + "\n"
-            		+ "ORDER BY Thumbnail DESC;");
+				+ "FROM Image\n"
+				+ "WHERE SourcePost = " + postID + "\n"
+				+ "ORDER BY Thumbnail DESC;");
             rs = ps.executeQuery();
             
             while(rs.next()) {
@@ -930,7 +924,6 @@ public static List<Post> browseSubleases(Connection conn) {
 		return images;
 	}
 }
-
 
 class Review {
 	private String username;
